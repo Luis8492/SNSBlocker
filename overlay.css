@@ -1,0 +1,188 @@
+/* YouTube 書き取り関所 — オーバーレイのスタイル */
+
+html.ytg-lock-scroll,
+html.ytg-lock-scroll body {
+  overflow: hidden !important;
+}
+
+.ytg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  background: #0f1115;
+  background: radial-gradient(circle at 50% 20%, #1b2030 0%, #0f1115 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "MS Mincho", serif;
+  color: #e8e6df;
+}
+
+.ytg-card {
+  width: min(720px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: #171a21;
+  border: 1px solid #2a2f3a;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+/* --- ヘッダ --- */
+.ytg-header { text-align: center; margin-bottom: 24px; }
+.ytg-title { font-size: 22px; font-weight: 700; letter-spacing: 0.05em; }
+.ytg-subtitle { font-size: 14px; color: #9aa0ab; margin-top: 6px; }
+.ytg-progress {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+.ytg-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #333a47;
+  border: 1px solid #444c5a;
+}
+.ytg-dot.active { background: #d9b25a; border-color: #d9b25a; }
+.ytg-dot.done { background: #5aa06a; border-color: #5aa06a; }
+.ytg-proglabel { font-size: 13px; color: #9aa0ab; margin-top: 8px; }
+
+/* --- 本文 --- */
+.ytg-body { text-align: center; }
+.ytg-hint { font-size: 14px; color: #9aa0ab; margin-bottom: 16px; }
+
+.ytg-text {
+  font-size: 26px;
+  line-height: 1.9;
+  padding: 28px;
+  background: #1e222b;
+  border: 1px solid #2a2f3a;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 作品タイトルの署名（表示欄の下） */
+.ytg-cite {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: 0 6px 28px;
+  position: relative;
+}
+.ytg-cite::before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  margin-right: 4px;
+  background: linear-gradient(to right, transparent, #d9b25a88);
+}
+.ytg-cite-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #e6c273;
+  text-shadow: 0 1px 8px rgba(217, 178, 90, 0.25);
+}
+.ytg-cite-author {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  color: #9aa0ab;
+  font-style: italic;
+}
+
+.ytg-noselect {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.ytg-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 22px;
+  line-height: 1.8;
+  padding: 20px;
+  background: #1e222b;
+  color: #e8e6df;
+  border: 1px solid #3a4150;
+  border-radius: 12px;
+  resize: vertical;
+  margin-bottom: 20px;
+  outline: none;
+}
+.ytg-input:focus { border-color: #d9b25a; }
+
+/* --- ボタン --- */
+.ytg-btnrow { display: flex; gap: 12px; justify-content: center; }
+.ytg-btn {
+  font-family: inherit;
+  font-size: 17px;
+  padding: 12px 32px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.05s ease, background 0.15s ease;
+}
+.ytg-btn:active { transform: translateY(1px); }
+.ytg-btn-primary { background: #d9b25a; color: #1a1408; font-weight: 700; }
+.ytg-btn-primary:hover { background: #e6c273; }
+.ytg-btn-ghost {
+  background: transparent;
+  color: #9aa0ab;
+  border: 1px solid #3a4150;
+}
+.ytg-btn-ghost:hover { color: #e8e6df; border-color: #5a6270; }
+
+.ytg-btn-big {
+  font-size: 20px;
+  padding: 18px 28px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 縦積みボタン（クリア後の選択画面用） */
+.ytg-btnstack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  margin-top: 8px;
+}
+
+/* --- 結果 --- */
+.ytg-result { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+.ytg-ok { color: #7ad18a; }
+.ytg-ng { color: #e88a8a; }
+
+/* --- diff表示 --- */
+.ytg-diff {
+  font-size: 24px;
+  line-height: 2;
+  padding: 24px;
+  background: #1e222b;
+  border: 1px solid #2a2f3a;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.ytg-eq  { color: #cfd3da; }
+.ytg-ins { color: #e88a8a; text-decoration: line-through; background: rgba(232, 138, 138, 0.15); }
+.ytg-del { color: #7ad18a; background: rgba(122, 209, 138, 0.18); border-radius: 3px; }
+.ytg-legend { font-size: 13px; color: #9aa0ab; margin-bottom: 20px; }
+.ytg-legend .ytg-eq  { color: #cfd3da; }
+.ytg-legend .ytg-ins { text-decoration: none; background: none; color: #e88a8a; }
+.ytg-legend .ytg-del { background: none; color: #7ad18a; }
