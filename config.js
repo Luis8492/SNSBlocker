@@ -5,12 +5,14 @@
 // 読むように差し替えれば、host.js / continue.js 側は変更不要。
 //
 // activeQuiz には、各クイズが registerQuiz で登録した id を指定する。
-//   "dictation" : 古典文学の書き取り
-//   "hyakunin"  : 百人一首の書き取り（上の句を見て下の句を書く）
-//   （将来）      "shogi" : 次の一手／詰将棋、"solfege" : 聴音／リズム など
+//   "dictation"     : 古典文学の書き取り
+//   "hyakunin"      : 百人一首の書き取り（上の句を見て下の句を書く）
+//   "solfege-chord" : ソルフェージュの重音聴音（2音を聴き取り鍵盤で答える）
+//   （将来）          "solfege-rhythm" : リズム聴音、"solfege-melody" : 旋律聴音、
+//                     "shogi" : 次の一手／詰将棋 など
 (function () {
   "use strict";
   var K = window.Kansho || (window.Kansho = {});
   K.config = K.config || {};
-  K.config.activeQuiz = "hyakunin";
+  K.config.activeQuiz = "solfege-chord";
 })();

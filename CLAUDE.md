@@ -21,10 +21,11 @@ Everything hangs off a shared global `window.Kansho` (K). The platform layer kno
 - `core/ui.js` — quiz-agnostic UI helpers exposed as `K.ui`: `el` (DOM builder), `forbidCopy`/`forbidPaste`, `renderHeader` (title + progress dots + "問 i / n").
 - `core/host.js` — the YouTube gate: detects video navigation (via `yt-navigate-finish`, `popstate`, and a 500 ms href poll — YouTube is an SPA), builds the overlay, pauses all `<video>` elements on a 400 ms interval, calls `quiz.start(card, { onComplete })`, and renders the post-clear choice screen ("continue practicing" → `continue.html`, or unlock the video).
 - `core/overlay.css` — shared styles. All classes are prefixed `ytg-`.
-- `config.js` — sets `K.config.activeQuiz` (currently `"hyakunin"`; the project runs in plugin mode — multiple quizzes registered, one selected here).
+- `config.js` — sets `K.config.activeQuiz` (currently `"solfege-chord"`; the project runs in plugin mode — multiple quizzes registered, one selected here).
 - `continue.js`/`continue.html` — extension-internal page that loops rounds of the active quiz indefinitely.
 - `quizzes/dictation/` — classical-literature dictation. `passages.js` puts data at `K.data.dictationPassages`; `dictation.js` holds all dictation-specific logic (normalization, grading, LCS-based diff rendering, the 5-second "覚えた" arming gauge, Ctrl+Enter handling) and calls `K.registerQuiz`. Quiz-specific styles live in `dictation.css` (loaded after `overlay.css`, so it may override `ytg-*` classes).
 - `quizzes/hyakunin/` — Hyakunin Isshu dictation: 上の句 (kami) always shown, only 下の句 (shimo) is memorized and typed; no arming delay on "覚えた"; 3 random poems per round (`POEMS_PER_ROUND`). Data (`K.data.hyakuninPoems`, all 100 poems in historical kana from the Ōmi Jingū listing) in `poems.js`. Quizzes must stay self-contained (no cross-quiz dependencies) — hyakunin deliberately duplicates dictation's normalize/diff logic so deleting either quiz folder never breaks the other.
+- `quizzes/solfege/` — ear-training quizzes. `chord.js` registers `solfege-chord` (2-note harmonic interval dictation): random bottom note (C4–C5) + random interval (m2–P8), tones synthesized with Web Audio API oscillators (no audio files), answered on a CSS-drawn piano keyboard (C4–C6) where clicking a key auditions it and the ○ dot below selects it (max 2). Wrong answers only color the user's own picks ok/ng — never reveal the correct pitches. Future rhythm/melody quizzes go in this folder as separate quiz ids (`solfege-rhythm`, …).
 
 ### Quiz contract
 

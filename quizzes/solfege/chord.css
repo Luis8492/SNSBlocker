@@ -1,0 +1,100 @@
+/* 重音聴音クイズ固有のスタイル。chord.js が生成する要素を対象にする。
+   基盤CSS(core/overlay.css)の後に読み込む前提。
+   プラグインとして自己完結させるため、他クイズと共通の結果表示ルールも
+   同値でここに持つ。 */
+
+/* --- ピアノ鍵盤 --------------------------------------------------------- */
+.sf-kbd {
+  position: relative;
+  height: 170px;
+  margin: 10px 0 14px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.sf-key {
+  position: absolute;
+  top: 0;
+  box-sizing: border-box;
+  border-radius: 0 0 6px 6px;
+  cursor: pointer;
+}
+
+.sf-white {
+  height: 100%;
+  background: #f2efe6;
+  border: 1px solid #3a4150;
+  z-index: 1;
+}
+.sf-white:hover { background: #fff9e8; }
+.sf-white:active { background: #ead9a8; }
+
+.sf-black {
+  height: 60%;
+  background: #23262d;
+  border: 1px solid #000;
+  border-top: none;
+  z-index: 2;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+}
+.sf-black:hover { background: #333845; }
+.sf-black:active { background: #4a4130; }
+
+/* C の音名ラベル（位置の目印） */
+.sf-keylabel {
+  position: absolute;
+  bottom: 28px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 10px;
+  color: #6b7280;
+  pointer-events: none;
+}
+
+/* --- 解答の選択○（鍵盤クリック＝試し弾きとは別に、これで選ぶ） --------- */
+.sf-dot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 7px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 2px solid #8a92a0;
+  background: transparent;
+}
+.sf-black .sf-dot { border-color: #b8bdc7; }
+.sf-dot:hover { border-color: #d9b25a; }
+
+/* 選択中: ○が金色に埋まり、鍵盤も淡く光る */
+.sf-sel .sf-dot {
+  background: #d9b25a;
+  border-color: #d9b25a;
+}
+.sf-white.sf-sel { background: #f7e9c4; }
+.sf-black.sf-sel { background: #57492a; }
+
+/* --- 答え合わせの色付け（自分の選んだ音の正誤のみ。正解の音は明かさない） */
+.sf-white.sf-ok { background: #bfe3c6; border-color: #4d8a59; }
+.sf-black.sf-ok { background: #2f5a38; }
+.sf-white.sf-ng { background: #ecc4c4; border-color: #a05252; }
+.sf-black.sf-ng { background: #6a3232; }
+.sf-legend-ok { color: #7ad18a; }
+.sf-legend-ng { color: #e88a8a; }
+
+/* --- 状態表示（「2音選んでください」等） -------------------------------- */
+.sf-status {
+  min-height: 1.4em;
+  font-size: 13px;
+  color: #e88a8a;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+/* --- 結果（他クイズと同値の共通ルール） --------------------------------- */
+.ytg-result { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+.ytg-ok { color: #7ad18a; }
+.ytg-ng { color: #e88a8a; }
+.ytg-legend { font-size: 13px; color: #9aa0ab; margin-bottom: 20px; }

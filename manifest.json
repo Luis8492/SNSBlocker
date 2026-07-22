@@ -14,12 +14,14 @@
         "quizzes/dictation/dictation.js",
         "quizzes/hyakunin/poems.js",
         "quizzes/hyakunin/hyakunin.js",
+        "quizzes/solfege/chord.js",
         "core/host.js"
       ],
       "css": [
         "core/overlay.css",
         "quizzes/dictation/dictation.css",
-        "quizzes/hyakunin/hyakunin.css"
+        "quizzes/hyakunin/hyakunin.css",
+        "quizzes/solfege/chord.css"
       ],
       "run_at": "document_start",
       "all_frames": false
@@ -36,9 +38,11 @@
         "quizzes/dictation/dictation.js",
         "quizzes/hyakunin/poems.js",
         "quizzes/hyakunin/hyakunin.js",
+        "quizzes/solfege/chord.js",
         "core/overlay.css",
         "quizzes/dictation/dictation.css",
-        "quizzes/hyakunin/hyakunin.css"
+        "quizzes/hyakunin/hyakunin.css",
+        "quizzes/solfege/chord.css"
       ],
       "matches": ["*://*.youtube.com/*"]
     }
