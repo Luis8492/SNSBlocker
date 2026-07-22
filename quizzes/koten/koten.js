@@ -44,6 +44,39 @@
     return normalize(expected) === normalize(input);
   }
 
+  // ---- ルビ（青空文庫風「漢字《かな》」「｜語《かな》」記法） --------------
+  // ルビは直前の漢字連続部分（｜があればそこから）に振られる。
+  // 表示は <ruby>本文<rt>かな</rt></ruby>、採点はルビを除いた本文のみで行う。
+  var RUBY_RE = /(?:｜([^《｜]+)|([々一-鿿々〆ヵヶ]+))《([^》]+)》/g;
+
+  // ルビ記法を取り除いた本文（採点・diff用）
+  function stripRuby(text) {
+    return String(text).replace(RUBY_RE, function (_, a, b) { return a || b; })
+      .replace(/｜/g, "");
+  }
+
+  // ルビ記法をふりがな付きDOMとして node に描画する（表示用）
+  function renderRuby(node, text) {
+    text = String(text);
+    var last = 0, m;
+    RUBY_RE.lastIndex = 0;
+    while ((m = RUBY_RE.exec(text))) {
+      if (m.index > last) {
+        node.appendChild(document.createTextNode(text.slice(last, m.index)));
+      }
+      var ruby = document.createElement("ruby");
+      ruby.appendChild(document.createTextNode(m[1] || m[2]));
+      var rt = document.createElement("rt");
+      rt.textContent = m[3];
+      ruby.appendChild(rt);
+      node.appendChild(ruby);
+      last = RUBY_RE.lastIndex;
+    }
+    if (last < text.length) {
+      node.appendChild(document.createTextNode(text.slice(last)));
+    }
+  }
+
   // 元文字列を「正規化文字の並び」と「各正規化文字が元の何文字目由来か」に分解する。
   function buildNorm(orig) {
     var norm = [], map = [];
@@ -157,7 +190,7 @@
       body.appendChild(el("div", "ytg-hint", "次の文章を覚えてください（コピー不可）"));
 
       var textBox = el("div", "ytg-text ytg-noselect");
-      textBox.textContent = passage.segments[state.index];
+      renderRuby(textBox, passage.segments[state.index]);
       ui.forbidCopy(textBox);
       body.appendChild(textBox);
 
@@ -200,7 +233,7 @@
 
       // ヒント: ぼかした原文（濃淡＝漢字かどうかが分かる程度）。初期は非表示。
       var hintBox = el("div", "ytg-text ytg-noselect ytg-blur");
-      hintBox.textContent = passage.segments[state.index];
+      renderRuby(hintBox, passage.segments[state.index]);
       ui.forbidCopy(hintBox);
       hintBox.style.display = "none";
       body.appendChild(hintBox);
@@ -240,7 +273,7 @@
 
     // 答え合わせ
     function check(input) {
-      var expected = passage.segments[state.index];
+      var expected = stripRuby(passage.segments[state.index]); // ルビは採点対象外
       if (isCorrect(expected, input)) {
         // 正解時は何も讃えず、淡々と次へ。
         state.index++;

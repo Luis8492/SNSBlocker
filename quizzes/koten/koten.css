@@ -14,6 +14,15 @@
   word-break: break-word;
 }
 
+/* ふりがな（青空文庫風ルビ記法を <ruby> で描画） */
+.ytg-text rt {
+  font-size: 0.42em;
+  color: #9aa0ab;
+  letter-spacing: 0;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* 作品タイトルの署名（表示欄・入力欄の下） */
 .ytg-cite {
   display: flex;
