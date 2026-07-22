@@ -44,8 +44,9 @@
         (i < opts.index ? " done" : (i === opts.index ? " active" : ""))));
     }
     header.appendChild(prog);
+    // 完了時は index が total まで進むが、ラベルは total で頭打ちにして "3/3" を保つ。
     header.appendChild(el("div", "ytg-proglabel",
-      "問 " + (opts.index + 1) + " / " + opts.total));
+      "問 " + Math.min(opts.index + 1, opts.total) + " / " + opts.total));
   }
 
   K.ui = {

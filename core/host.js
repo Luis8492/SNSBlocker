@@ -91,7 +91,7 @@
     b.appendChild(el("div", "ytg-hint", "すべて解き終えました。さて、どうしますか。"));
 
     var quit = el("button", "ytg-btn ytg-btn-primary ytg-btn-big",
-      "YouTubeはやめてもっと続ける!!!");
+      "もっと続ける!!!");
     quit.addEventListener("click", function () {
       // YouTubeを離れ、拡張機能内の継続ページへ遷移する。
       try {
@@ -101,7 +101,7 @@
       }
     });
 
-    var watch = el("button", "ytg-btn ytg-btn-ghost", "動画を見る");
+    var watch = el("button", "ytg-btn ytg-btn-ghost", "ソーシャルネットワークへ進む");
     watch.addEventListener("click", function () {
       markUnlocked(currentId);
       removeOverlay();
