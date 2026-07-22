@@ -1,11 +1,16 @@
-// 古典文学の書き取り課題。
+// 書き取りクイズのデータ（古典文学）。
 // 各作品は「一続きの文章」を3つの segment に分けて出題する。
 // segment は覚えるのがそれなりに大変な長さにしてある。
-// content.js から window.YTG_PASSAGES として参照される。
+// dictation.js から Kansho.data.dictationPassages として参照される。
+//
+// 作品や分割はここを編集すれば自由に追加・変更できる（基盤には影響しない）。
 (function () {
   "use strict";
 
-  window.YTG_PASSAGES = [
+  var K = window.Kansho || (window.Kansho = {});
+  K.data = K.data || {};
+
+  K.data.dictationPassages = [
     {
       title: "徒然草・序段",
       author: "吉田兼好",

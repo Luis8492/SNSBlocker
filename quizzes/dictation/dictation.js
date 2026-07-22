@@ -1,10 +1,19 @@
-// YouTube 書き取り関所 — 出題エンジン（共有モジュール）
-// YouTube上のオーバーレイ(content.js)と、継続ページ(continue.js)の両方から使う。
-// window.YTGQuiz.createSession(container, options) でコンテナ内に1セット(3問)の書き取りを構築する。
-//   options.passage    : 出題する作品を固定したい場合に指定（省略時ランダム）
-//   options.onComplete : 全問終了時に呼ばれる。引数 {container, body, el, restart}
+// 書き取りクイズ（古典文学）— 出題ロジック。
+//
+// 基盤層（Kansho）へ registerQuiz で登録する。基盤側はこのファイルの中身を
+// 知らずに start(container, ctx) を呼ぶだけ。採点（正規化・diff）はこの形式
+// 固有のドメインロジックなので、ここに閉じている。
+//   ctx.onComplete : 全問クリア時に基盤が渡すコールバック（クリア後画面を描画）
+//   ctx.options    : { passage } — 出題する作品を固定したい場合（省略時ランダム）
 (function () {
   "use strict";
+
+  var K = window.Kansho;
+  var ui = K.ui;
+  var el = ui.el;
+
+  var ICON = "📜";
+  var TITLE = "書き取り関所";
 
   // ---- 文字の正規化 ------------------------------------------------------
   // 1文字を比較用に正規化する。句読点・記号・空白は "" になる（＝比較で無視）。
@@ -89,32 +98,12 @@
     return out;
   }
 
-  // ---- コピー・ペースト等の禁止 ------------------------------------------
-  function block(ev) { ev.preventDefault(); ev.stopPropagation(); return false; }
-  function forbidCopy(node) {
-    ["copy", "cut", "contextmenu", "dragstart", "selectstart"].forEach(function (t) {
-      node.addEventListener(t, block);
-    });
-  }
-  function forbidPaste(node) {
-    ["paste", "copy", "cut", "contextmenu", "drop", "dragover"].forEach(function (t) {
-      node.addEventListener(t, block);
-    });
-  }
-
-  // ---- DOMヘルパ ---------------------------------------------------------
-  function el(tag, cls, text) {
-    var e = document.createElement(tag);
-    if (cls) e.className = cls;
-    if (text != null) e.textContent = text;
-    return e;
-  }
-
-  // ---- セッション --------------------------------------------------------
-  function createSession(container, options) {
-    options = options || {};
-    var passages = window.YTG_PASSAGES || [];
-    var passage = options.passage ||
+  // ---- 1ラウンド（3問）の構築 --------------------------------------------
+  function start(container, ctx) {
+    ctx = ctx || {};
+    var opts = ctx.options || {};
+    var passages = K.data.dictationPassages || [];
+    var passage = opts.passage ||
       passages[Math.floor(Math.random() * passages.length)];
     var state = { index: 0 };
 
@@ -125,16 +114,10 @@
     container.appendChild(body);
 
     function renderHeader() {
-      header.innerHTML = "";
-      header.appendChild(el("div", "ytg-title", "📜 書き取り関所"));
-      var prog = el("div", "ytg-progress");
-      for (var i = 0; i < passage.segments.length; i++) {
-        prog.appendChild(el("span", "ytg-dot" +
-          (i < state.index ? " done" : (i === state.index ? " active" : ""))));
-      }
-      header.appendChild(prog);
-      header.appendChild(el("div", "ytg-proglabel",
-        "問 " + (state.index + 1) + " / " + passage.segments.length));
+      ui.renderHeader(header, {
+        icon: ICON, title: TITLE,
+        total: passage.segments.length, index: state.index
+      });
     }
 
     // 覚える画面
@@ -145,7 +128,7 @@
 
       var textBox = el("div", "ytg-text ytg-noselect");
       textBox.textContent = passage.segments[state.index];
-      forbidCopy(textBox);
+      ui.forbidCopy(textBox);
       body.appendChild(textBox);
 
       // 作品タイトルを表示欄の下にカッコよく。
@@ -171,7 +154,7 @@
       ta.setAttribute("spellcheck", "false");
       ta.rows = 4;
       ta.placeholder = "ここに入力…";
-      forbidPaste(ta);
+      ui.forbidPaste(ta);
       ta.addEventListener("keydown", function (ev) {
         if (ev.key === "Enter" && (ev.ctrlKey || ev.metaKey)) {
           ev.preventDefault();
@@ -227,18 +210,20 @@
       body.appendChild(btn);
     }
 
-    // 全問終了 → 呼び出し側に委譲
+    // 全問終了 → 基盤側（ctx.onComplete）に委譲
     function complete() {
       renderHeader();
       body.innerHTML = "";
-      if (typeof options.onComplete === "function") {
-        options.onComplete({
+      if (typeof ctx.onComplete === "function") {
+        ctx.onComplete({
           container: container,
           body: body,
+          ui: ui,
           el: el,
           restart: function (passageOverride) {
-            createSession(container,
-              Object.assign({}, options, { passage: passageOverride || null }));
+            start(container, Object.assign({}, ctx, {
+              options: Object.assign({}, opts, { passage: passageOverride || null })
+            }));
           }
         });
       }
@@ -247,10 +232,13 @@
     showDisplay();
   }
 
-  window.YTGQuiz = {
-    createSession: createSession,
-    normalize: normalize,
-    isCorrect: isCorrect,
-    el: el
-  };
+  // ---- 基盤へ登録 --------------------------------------------------------
+  K.registerQuiz({
+    id: "dictation",
+    title: TITLE,
+    icon: ICON,
+    start: start,
+    // 採点ユーティリティを外から使いたい場合のために公開（任意）。
+    util: { normalize: normalize, isCorrect: isCorrect }
+  });
 })();

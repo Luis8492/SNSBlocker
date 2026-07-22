@@ -6,7 +6,14 @@
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/*", "*://m.youtube.com/*"],
-      "js": ["texts.js", "quiz.js", "content.js"],
+      "js": [
+        "core/registry.js",
+        "core/ui.js",
+        "config.js",
+        "quizzes/dictation/passages.js",
+        "quizzes/dictation/dictation.js",
+        "core/host.js"
+      ],
       "css": ["overlay.css"],
       "run_at": "document_start",
       "all_frames": false
@@ -14,7 +21,15 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["continue.html", "quiz.js", "texts.js", "overlay.css"],
+      "resources": [
+        "continue.html",
+        "core/registry.js",
+        "core/ui.js",
+        "config.js",
+        "quizzes/dictation/passages.js",
+        "quizzes/dictation/dictation.js",
+        "overlay.css"
+      ],
       "matches": ["*://*.youtube.com/*"]
     }
   ]

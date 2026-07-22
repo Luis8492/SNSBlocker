@@ -1,13 +1,16 @@
-// YouTube 書き取り関所 — content script
-// 動画ページを検知したら画面をオーバーレイし、quiz.js の出題エンジンで書き取りを課す。
+// Kansho — YouTube関所（基盤層のホスト）。
+// 動画ページを検知したら画面をオーバーレイし、有効なクイズ形式に出題を委譲する。
+// どのクイズ形式かは知らない（Kansho.getActiveQuiz が config.activeQuiz で決める）。
 // 全問クリアで「動画を見る」か「YouTubeはやめてもっと続ける!!!」を選ばせる。
 (function () {
   "use strict";
 
+  var K = window.Kansho;
+
   var STORAGE_KEY = "ytg_unlocked_ids";
 
   var overlay = null;     // オーバーレイ要素
-  var card = null;        // 出題エンジンの描画先
+  var card = null;        // クイズの描画先
   var pauseTimer = null;  // 背後の動画を止め続けるタイマー
   var currentId = null;   // ゲート中の動画ID
 
@@ -73,13 +76,19 @@
   function startGate(id) {
     ensureOverlay();
     currentId = id;
-    window.YTGQuiz.createSession(card, { onComplete: renderCleared });
+    var quiz = K.getActiveQuiz();
+    if (!quiz) {
+      // 有効なクイズが無い（設定ミス等）。ロックだけはしないで開放する。
+      removeOverlay();
+      return;
+    }
+    quiz.start(card, { onComplete: renderCleared });
   }
 
-  // 全問クリア後の選択画面
+  // 全問クリア後の選択画面（クイズ形式に依存しない基盤の画面）
   function renderCleared(info) {
     var b = info.body, el = info.el;
-    b.appendChild(el("div", "ytg-hint", "3問すべて書き取りました。さて、どうしますか。"));
+    b.appendChild(el("div", "ytg-hint", "すべて解き終えました。さて、どうしますか。"));
 
     var quit = el("button", "ytg-btn ytg-btn-primary ytg-btn-big",
       "YouTubeはやめてもっと続ける!!!");

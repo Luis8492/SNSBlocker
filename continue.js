@@ -1,9 +1,11 @@
-// YouTube 書き取り関所 — 継続ページ
-// YouTubeを離れて、ここで書き取りを好きなだけ続ける。
+// Kansho — 継続ページ（基盤層）。
+// YouTubeを離れて、ここで出題を好きなだけ続ける。
+// クイズ形式は host.js と同じく Kansho.getActiveQuiz に委譲する。
 (function () {
   "use strict";
 
-  var el = window.YTGQuiz.el;
+  var K = window.Kansho;
+  var el = K.ui.el;
   var root = document.getElementById("ytg-root");
 
   var overlay = el("div", "ytg-overlay");
@@ -14,7 +16,12 @@
   var count = 0;
 
   function start() {
-    window.YTGQuiz.createSession(card, { onComplete: onComplete });
+    var quiz = K.getActiveQuiz();
+    if (!quiz) {
+      card.appendChild(el("div", "ytg-hint", "有効な問題形式がありません。"));
+      return;
+    }
+    quiz.start(card, { onComplete: onComplete });
   }
 
   function onComplete(info) {
