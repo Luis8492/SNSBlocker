@@ -8,9 +8,12 @@ import io, sys, re
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
-SRC = r"D:\SNSBlocker\tmp\mate3_5_7_9_11\mate3.sfen"
-OUT = sys.argv[1]  # 候補JSONの出力先（problems.js の生成は gen_problems.js が行う）
-COUNT = 340  # 候補数。Node側でソルバー検証（ちょうど3手詰め）に通った先頭300問を採用する
+# 使い方: python sample_tsume.py <手数(3/5/7/9/11)> <候補JSONの出力先>
+# problems.js の生成（ソルバー検証込み）は gen_problems.js が行う。
+N = int(sys.argv[1])
+SRC = r"D:\SNSBlocker\tmp\mate3_5_7_9_11" + "\\mate%d.sfen" % N
+OUT = sys.argv[2]
+COUNT = 340  # 候補数。Node側でソルバー検証（ちょうどN手詰め）に通った先頭300問を採用する
 
 HAND_ORDER = "RBGSNLP"
 

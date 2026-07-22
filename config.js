@@ -10,6 +10,8 @@
 //   "hyakunin" : 百人一首の書き取り（上の句を見て下の句を書く）
 //   "juon"     : 重音(2音)の聴音（2音を聴き取り鍵盤で答える）
 //   "tsume"    : 詰将棋(3手詰)（盤クリックで詰手順を指す）
+//   "tsume5"   : 詰将棋(5手詰)
+//   "tsume7"   : 詰将棋(7手詰)
 (function () {
   "use strict";
   var K = window.Kansho || (window.Kansho = {});

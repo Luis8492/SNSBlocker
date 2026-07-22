@@ -1,4 +1,4 @@
-// 詰将棋クイズ（3手詰め）— 出題ロジック。
+// 詰将棋クイズ（3手詰・5手詰・7手詰）— 出題ロジック。
 //
 // 将棋盤をクリックして詰手順を指す。ルール判定と玉方の応手は
 // shogi.js（ルールエンジン＋簡易詰みソルバー）に委譲する。
@@ -7,6 +7,9 @@
 //     逃れ手があるなら「間違い」→ 指し直し
 //   - 玉方の応手はソルバー検証済みの合法手からランダムに選ぶ（どれも敗着）
 //   - 余詰（別解の詰み筋）も正解として受け入れる
+//
+// 手数ごとに**別プラグイン**として登録する（末尾の VARIANTS 参照）。
+// ロジックは共通で、手数・データ・1ラウンドの問数だけが異なる。
 //
 // 基盤層（Kansho）へ registerQuiz で登録する。プラグインとして自己完結。
 //   ctx.onComplete : 全問クリア時に基盤が渡すコールバック
@@ -20,9 +23,13 @@
   var S = K.tsumeShogi;
 
   var ICON = "♟";
-  var TITLE = "詰将棋(3手詰)";
-  var PROBLEMS_PER_ROUND = 3;
-  var PLIES = 3; // 3手詰め
+
+  // 手数ごとのプラグイン定義。perRound は1ラウンドの問数。
+  var VARIANTS = [
+    { id: "tsume",  title: "詰将棋(3手詰)", plies: 3, key: "mate3", perRound: 3 },
+    { id: "tsume5", title: "詰将棋(5手詰)", plies: 5, key: "mate5", perRound: 3 },
+    { id: "tsume7", title: "詰将棋(7手詰)", plies: 7, key: "mate7", perRound: 3 }
+  ];
 
   // 駒の表示文字（成駒は1文字の略記）
   var CHAR = {};
@@ -53,13 +60,13 @@
     return picked;
   }
 
-  function start(container, ctx) {
+  function startQuiz(cfg, container, ctx) {
     ctx = ctx || {};
     var opts = ctx.options || {};
-    var all = (K.data.tsumeProblems && K.data.tsumeProblems.mate3) || [];
+    var all = (K.data.tsumeProblems && K.data.tsumeProblems[cfg.key]) || [];
     var problems = (opts.problems && opts.problems.length)
       ? opts.problems
-      : pickProblems(all, Math.min(PROBLEMS_PER_ROUND, all.length));
+      : pickProblems(all, Math.min(cfg.perRound, all.length));
     var state = { index: 0 };
 
     container.innerHTML = "";
@@ -73,7 +80,7 @@
 
     function renderHeader() {
       ui.renderHeader(header, {
-        icon: ICON, title: TITLE,
+        icon: ICON, title: cfg.title,
         total: problems.length, index: state.index
       });
     }
@@ -101,7 +108,7 @@
     function loadProblem() {
       g = {
         s: S.parseSfen(problems[state.index]),
-        remaining: PLIES,
+        remaining: cfg.plies,
         last: null,
         phase: "user",   // user | anim | wrong | done
         sel: null,       // { kind: "board"|"hand", idx|piece }
@@ -123,7 +130,7 @@
       renderHeader();
       body.innerHTML = "";
 
-      body.appendChild(el("div", "ytg-hint", PLIES + "手詰"));
+      body.appendChild(el("div", "ytg-hint", cfg.plies + "手詰"));
 
       // 玉方（上側）の持駒
       body.appendChild(handView(-1));
@@ -402,7 +409,7 @@
           ui: ui,
           el: el,
           restart: function (problemsOverride) {
-            start(container, Object.assign({}, ctx, {
+            startQuiz(cfg, container, Object.assign({}, ctx, {
               options: Object.assign({}, opts, { problems: problemsOverride || null })
             }));
           }
@@ -413,11 +420,13 @@
     loadProblem();
   }
 
-  // ---- 基盤へ登録 ----------------------------------------------------------
-  K.registerQuiz({
-    id: "tsume",
-    title: TITLE,
-    icon: ICON,
-    start: start
+  // ---- 基盤へ登録（手数ごとに別プラグイン） --------------------------------
+  VARIANTS.forEach(function (cfg) {
+    K.registerQuiz({
+      id: cfg.id,
+      title: cfg.title,
+      icon: ICON,
+      start: function (container, ctx) { startQuiz(cfg, container, ctx); }
+    });
   });
 })();
