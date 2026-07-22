@@ -76,13 +76,20 @@
   function startGate(id) {
     ensureOverlay();
     currentId = id;
-    var quiz = K.getActiveQuiz();
-    if (!quiz) {
-      // 有効なクイズが無い（設定ミス等）。ロックだけはしないで開放する。
-      removeOverlay();
-      return;
-    }
-    quiz.start(card, { onComplete: renderCleared });
+    // 選択パネルの設定（chrome.storage）の読み込みを待ってから出題する。
+    // オーバーレイは先に張っておく（待ち時間中も動画は見せない）。
+    var launch = function () {
+      if (currentId !== id || !card) return; // 待つ間に閉じた/別動画へ移った
+      var quiz = K.getActiveQuiz();
+      if (!quiz) {
+        // 有効なクイズが無い（設定ミス等）。ロックだけはしないで開放する。
+        removeOverlay();
+        return;
+      }
+      quiz.start(card, { onComplete: renderCleared });
+    };
+    if (K.config && K.config.onReady) K.config.onReady(launch);
+    else launch();
   }
 
   // 全問クリア後の選択画面（クイズ形式に依存しない基盤の画面）

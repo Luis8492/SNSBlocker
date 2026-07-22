@@ -38,5 +38,8 @@
     b.appendChild(stack);
   }
 
-  start();
+  // 選択パネルの設定（chrome.storage）の読み込みを待ってから開始する。
+  // 複数選択時は「もっと続ける」のたびに getActiveQuiz がランダムに選ぶ。
+  if (K.config && K.config.onReady) K.config.onReady(start);
+  else start();
 })();

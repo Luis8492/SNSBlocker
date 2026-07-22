@@ -30,12 +30,27 @@
     K.quizzes[spec.id] = spec;
   };
 
-  // 有効なクイズを返す。config.activeQuiz を優先し、
-  // 無ければ最初に登録されたものにフォールバックする。
+  // 有効なクイズを返す。
+  //   1. config.enabledQuizzes（選択パネルで保存された id の配列）があれば、
+  //      その中からランダムに選ぶ（複数選択時は呼び出しごと＝関所ごとに変わる）。
+  //      1ラウンドの全問は同じクイズから出る（ラウンド内で再抽選しないため）。
+  //   2. 無ければ config.activeQuiz（フォーク運用向けの静的指定）。
+  //   3. それも無ければ最初に登録されたもの。
   K.getActiveQuiz = function () {
+    var ids = Object.keys(K.quizzes);
+    if (!ids.length) return null;
+    var enabled = K.config.enabledQuizzes;
+    if (enabled && enabled.length) {
+      var pool = [];
+      for (var i = 0; i < enabled.length; i++) {
+        if (K.quizzes[enabled[i]]) pool.push(enabled[i]);
+      }
+      if (pool.length) {
+        return K.quizzes[pool[Math.floor(Math.random() * pool.length)]];
+      }
+    }
     var id = K.config.activeQuiz;
     if (id && K.quizzes[id]) return K.quizzes[id];
-    var keys = Object.keys(K.quizzes);
-    return keys.length ? K.quizzes[keys[0]] : null;
+    return K.quizzes[ids[0]];
   };
 })();

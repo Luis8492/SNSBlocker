@@ -43,8 +43,9 @@ core/registry.js   基盤: クイズを登録・選択するレジストリ（wi
 core/ui.js         基盤: 形式非依存の共有UI部品（el / コピペ禁止 / 進捗ヘッダ）
 core/host.js       基盤: YouTube関所（動画検知・オーバーレイ・ロック管理・クリア後画面）
 core/overlay.css   基盤: 共通スタイル（オーバーレイ/カード/ヘッダ/ボタン/進捗ドット）
-config.js          どの形式を出すか（Kansho.config.activeQuiz）
+config.js          どの形式を出すか（選択パネルの保存値の読み込み＋フォーク用の既定値）
 continue.html/js   基盤: 継続ページ
+options.html/js    基盤: 出題プラグインの選択パネル（ツールバーアイコンから開く）
 quizzes/
   dictation/
     passages.js    クイズ: 書き取りのデータ（古典文学）
@@ -64,9 +65,18 @@ quizzes/
     tsume.css      クイズ: 詰将棋固有のスタイル（盤・駒・持駒など）
 ```
 
-現在は**プラグイン運用**（複数クイズを登録し `config.js` で切替）で進めている。
-`activeQuiz` は `"tsume"`。`"dictation"`（古典文学）・`"hyakunin"`（百人一首）・
-`"solfege-chord"`（重音聴音）にも切り替えられる。
+現在は**プラグイン運用**（複数クイズを登録し、選択パネルで切替）で進めている。
+
+### 出題プラグインの選択パネル
+
+ツールバーの拡張機能アイコンを**クリック**（または右クリック→「オプション」）すると
+選択パネルが開き、出題するクイズをチェックボックスで選べる（**複数選択可**・最低1つ）。
+
+- 選択は `chrome.storage.sync` の `enabledQuizzes` に保存され、開いているタブにも
+  次の関所/ラウンドから反映される。
+- **複数選択時は、動画を開くたびにランダム**でいずれか1つが出題される。
+  1ラウンド（3問など、問数はプラグインごと）は同じプラグインから出る。
+- ストレージ未設定（初回・フォーク運用）のときは `config.js` の `activeQuiz` が使われる。
 
 ### 百人一首書き取り（hyakunin）
 
@@ -115,10 +125,10 @@ quizzes/
 `PLIES` を合わせるだけでよい（ソルバーは手数一般で動く）。
 
 - **フォーク運用**するなら、`quizzes/` に目的の形式だけを残し、`config.js` の `activeQuiz` を
-  その id にする。基盤（`core/`）は変更不要。各クイズは他クイズに依存しない
-  自己完結を保つこと（hyakunin が dictation と採点ロジックを重複して持つのはこのため）。
-- **拡張機能内で切り替える**なら、複数のクイズを登録したうえで `config.js` を
-  `chrome.storage` 等から読むように差し替える。`core/host.js` / `continue.js` は変更不要。
+  その id にする（ストレージ未設定ならこの値が使われる）。基盤（`core/`）は変更不要。
+  各クイズは他クイズに依存しない自己完結を保つこと
+  （hyakunin が dictation と採点ロジックを重複して持つのはこのため）。
+- **拡張機能内での切り替え**は上記の選択パネルで行う（実装済み）。
 
 ### 新しいクイズ形式を追加する
 
@@ -140,9 +150,10 @@ quizzes/
    `Kansho.data.<形式名>…` に置くと基盤の他部分から独立する。固有のスタイルは
    `quizzes/<形式名>/<形式名>.css` に置く（基盤CSSの後に読み込むので `.ytg-btn` 等を上書きできる）。
 2. `manifest.json` の `content_scripts.js` / `content_scripts.css` / `web_accessible_resources`、
-   および `continue.html` の `<script>`・`<link>` に、追加したファイルを（JSは `config.js` の後・
-   `core/host.js` の前、CSSは `core/overlay.css` の後に）登録する。
-3. `config.js` の `activeQuiz` を新しい id に変えると、その形式で出題される。
+   `continue.html` の `<script>`・`<link>`、および `options.html` の `<script>` に、
+   追加したファイルを（JSは `config.js` の後・`core/host.js` の前、CSSは
+   `core/overlay.css` の後に）登録する。
+3. 選択パネルで新しいクイズにチェックを入れると出題される。
 
 ## 仕様メモ
 

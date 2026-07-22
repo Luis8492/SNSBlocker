@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>出題プラグインの選択</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 16px 18px;
+      min-width: 300px;
+      background: #0f1115;
+      color: #e8e6df;
+      font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      font-size: 14px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      color: #e6c273;
+    }
+    label.quiz {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      margin-bottom: 6px;
+      background: #1e222b;
+      border: 1px solid #2a2f3a;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    label.quiz:hover { border-color: #3a4150; }
+    label.quiz input { accent-color: #d9b25a; width: 16px; height: 16px; }
+    .icon { width: 1.4em; text-align: center; }
+    .note {
+      margin: 12px 2px 0;
+      font-size: 12px;
+      line-height: 1.7;
+      color: #9aa0ab;
+    }
+    #status {
+      min-height: 1.4em;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #7ad18a;
+    }
+    #status.err { color: #e88a8a; }
+  </style>
+</head>
+<body>
+  <h1>出題プラグイン</h1>
+  <div id="list"></div>
+  <div id="status"></div>
+  <p class="note">
+    複数選択すると、動画を開くたびにランダムでいずれかが出題されます。<br>
+    1ラウンド（3問など）は同じプラグインから出ます。
+  </p>
+  <!-- クイズの一覧を得るため、基盤と全クイズを読み込む（host は読み込まない） -->
+  <script src="core/registry.js"></script>
+  <script src="core/ui.js"></script>
+  <script src="config.js"></script>
+  <script src="quizzes/dictation/passages.js"></script>
+  <script src="quizzes/dictation/dictation.js"></script>
+  <script src="quizzes/hyakunin/poems.js"></script>
+  <script src="quizzes/hyakunin/hyakunin.js"></script>
+  <script src="quizzes/solfege/chord.js"></script>
+  <script src="quizzes/tsume/shogi.js"></script>
+  <script src="quizzes/tsume/problems.js"></script>
+  <script src="quizzes/tsume/tsume.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

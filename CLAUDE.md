@@ -21,7 +21,8 @@ Everything hangs off a shared global `window.Kansho` (K). The platform layer kno
 - `core/ui.js` — quiz-agnostic UI helpers exposed as `K.ui`: `el` (DOM builder), `forbidCopy`/`forbidPaste`, `renderHeader` (title + progress dots + "問 i / n").
 - `core/host.js` — the YouTube gate: detects video navigation (via `yt-navigate-finish`, `popstate`, and a 500 ms href poll — YouTube is an SPA), builds the overlay, pauses all `<video>` elements on a 400 ms interval, calls `quiz.start(card, { onComplete })`, and renders the post-clear choice screen ("continue practicing" → `continue.html`, or unlock the video).
 - `core/overlay.css` — shared styles. All classes are prefixed `ytg-`.
-- `config.js` — sets `K.config.activeQuiz` (currently `"tsume"`; the project runs in plugin mode — multiple quizzes registered, one selected here).
+- `config.js` — loads the quiz selection from `chrome.storage.sync` (`enabledQuizzes`, an array of quiz ids saved by the options panel) and exposes `K.config.onReady(cb)` since that read is async — `host.js`/`continue.js` wait on it before starting a quiz. `K.config.activeQuiz` (currently `"tsume"`) is the fallback when storage is unset (first run / fork mode). With multiple ids enabled, `K.getActiveQuiz()` picks one at random per call (= per video gate / per continue-page round); a round's questions all come from that one quiz.
+- `options.html`/`options.js` — plugin selection panel, opened from the toolbar icon (click = popup, right-click → オプション). Checkbox list of registered quizzes (multi-select, minimum one), saved to `chrome.storage.sync`; changes propagate to open tabs via `chrome.storage.onChanged` and take effect from the next gate/round.
 - `continue.js`/`continue.html` — extension-internal page that loops rounds of the active quiz indefinitely.
 - `quizzes/dictation/` — classical-literature dictation. `passages.js` puts data at `K.data.dictationPassages`; `dictation.js` holds all dictation-specific logic (normalization, grading, LCS-based diff rendering, the 5-second "覚えた" arming gauge, Ctrl+Enter handling) and calls `K.registerQuiz`. Quiz-specific styles live in `dictation.css` (loaded after `overlay.css`, so it may override `ytg-*` classes).
 - `quizzes/hyakunin/` — Hyakunin Isshu dictation: 上の句 (kami) always shown, only 下の句 (shimo) is memorized and typed; no arming delay on "覚えた"; 3 random poems per round (`POEMS_PER_ROUND`). Data (`K.data.hyakuninPoems`, all 100 poems in historical kana from the Ōmi Jingū listing) in `poems.js`. Quizzes must stay self-contained (no cross-quiz dependencies) — hyakunin deliberately duplicates dictation's normalize/diff logic so deleting either quiz folder never breaks the other.
@@ -36,14 +37,15 @@ A quiz registers `{ id, title, icon, start(container, ctx) }`. `start` builds on
 
 Content scripts run in this order and share `window.Kansho`: `core/registry.js` → `core/ui.js` → `config.js` → quiz files → `core/host.js` (host must be last so quizzes are registered before the gate starts). `continue.html` mirrors the same order with `continue.js` last.
 
-### Adding a new quiz or file — three places to update
+### Adding a new quiz or file — four places to update
 
 Any new JS/CSS file must be registered in all of:
 1. `manifest.json` `content_scripts.js`/`css` (JS after `config.js`, before `core/host.js`; CSS after `core/overlay.css`)
 2. `manifest.json` `web_accessible_resources`
 3. `continue.html` `<script>`/`<link>` tags
+4. `options.html` `<script>` tags (JS only — the panel enumerates registered quizzes; no quiz CSS needed there)
 
-Then point `config.js` `activeQuiz` at the new quiz id. See the "新しいクイズ形式を追加する" section of README.md for the full recipe.
+The new quiz then appears in the selection panel. See the "新しいクイズ形式を追加する" section of README.md for the full recipe.
 
 ## Behavioral specifics worth knowing
 

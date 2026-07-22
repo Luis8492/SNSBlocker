@@ -2,7 +2,16 @@
   "manifest_version": 3,
   "name": "YouTube 書き取り関所",
   "version": "1.0.0",
-  "description": "YouTubeの動画を開くと、古典文学の書き取りを課します。作品の全問を正解するまで動画は見られません。見すぎ防止用。",
+  "description": "YouTubeの動画を開くと、書き取り・聴音・詰将棋などの課題を課します。全問正解するまで動画は見られません。見すぎ防止用。",
+  "permissions": ["storage"],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+  "action": {
+    "default_title": "出題プラグインの選択",
+    "default_popup": "options.html"
+  },
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/*", "*://m.youtube.com/*"],
