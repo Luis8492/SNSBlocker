@@ -197,6 +197,14 @@
       body.innerHTML = "";
       body.appendChild(el("div", "ytg-hint",
         "覚えた文章を入力してください（貼り付け不可 / Ctrl+Enterで送信）"));
+
+      // ヒント: ぼかした原文（濃淡＝漢字かどうかが分かる程度）。初期は非表示。
+      var hintBox = el("div", "ytg-text ytg-noselect ytg-blur");
+      hintBox.textContent = passage.segments[state.index];
+      ui.forbidCopy(hintBox);
+      hintBox.style.display = "none";
+      body.appendChild(hintBox);
+
       var ta = el("textarea", "ytg-input");
       ta.setAttribute("autocomplete", "off");
       ta.setAttribute("autocorrect", "off");
@@ -212,9 +220,16 @@
       var row = el("div", "ytg-btnrow");
       var submit = el("button", "ytg-btn ytg-btn-primary", "Submit");
       submit.addEventListener("click", function () { check(ta.value); });
+      var hint = el("button", "ytg-btn ytg-btn-ghost", "ヒント");
+      hint.addEventListener("click", function () {
+        var shown = hintBox.style.display !== "none";
+        hintBox.style.display = shown ? "none" : "";
+        hint.textContent = shown ? "ヒント" : "ヒントを隠す";
+      });
       var reread = el("button", "ytg-btn ytg-btn-ghost", "もう一度見る");
       reread.addEventListener("click", showDisplay);
       row.appendChild(submit);
+      row.appendChild(hint);
       row.appendChild(reread);
       body.appendChild(row);
 

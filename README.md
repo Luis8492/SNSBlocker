@@ -42,13 +42,14 @@ YouTube を見すぎないための Chrome 拡張機能です。
 core/registry.js   基盤: クイズを登録・選択するレジストリ（window.Kansho）
 core/ui.js         基盤: 形式非依存の共有UI部品（el / コピペ禁止 / 進捗ヘッダ）
 core/host.js       基盤: YouTube関所（動画検知・オーバーレイ・ロック管理・クリア後画面）
+core/overlay.css   基盤: 共通スタイル（オーバーレイ/カード/ヘッダ/ボタン/進捗ドット）
 config.js          どの形式を出すか（Kansho.config.activeQuiz）
 continue.html/js   基盤: 継続ページ
-overlay.css        基盤: 共通スタイル（ytg-* クラス）
 quizzes/
   dictation/
     passages.js    クイズ: 書き取りのデータ（古典文学）
     dictation.js   クイズ: 書き取りの出題ロジック（採点＝正規化・diff もここに閉じる）
+    dictation.css  クイズ: 書き取り固有のスタイル（本文/署名/入力欄/ぼかし/diff/ゲージ）
 ```
 
 - **フォーク運用**するなら、`quizzes/` に目的の形式だけを残し、`config.js` の `activeQuiz` を
@@ -73,10 +74,11 @@ quizzes/
 
    共有UI（`Kansho.ui.el` / `forbidCopy` / `forbidPaste` / `renderHeader`）を利用でき、
    採点などその形式固有のロジックはこのフォルダ内に閉じ込める。データは
-   `Kansho.data.<形式名>…` に置くと基盤の他部分から独立する。
-2. `manifest.json` の `content_scripts.js` と `web_accessible_resources`、および
-   `continue.html` の `<script>` に、追加したファイルを（`config.js` の後・`core/host.js` の前に）
-   登録する。
+   `Kansho.data.<形式名>…` に置くと基盤の他部分から独立する。固有のスタイルは
+   `quizzes/<形式名>/<形式名>.css` に置く（基盤CSSの後に読み込むので `.ytg-btn` 等を上書きできる）。
+2. `manifest.json` の `content_scripts.js` / `content_scripts.css` / `web_accessible_resources`、
+   および `continue.html` の `<script>`・`<link>` に、追加したファイルを（JSは `config.js` の後・
+   `core/host.js` の前、CSSは `core/overlay.css` の後に）登録する。
 3. `config.js` の `activeQuiz` を新しい id に変えると、その形式で出題される。
 
 ## 仕様メモ

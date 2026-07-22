@@ -1,62 +1,5 @@
-/* YouTube 書き取り関所 — オーバーレイのスタイル */
-
-html.ytg-lock-scroll,
-html.ytg-lock-scroll body {
-  overflow: hidden !important;
-}
-
-.ytg-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483647;
-  background: #0f1115;
-  background: radial-gradient(circle at 50% 20%, #1b2030 0%, #0f1115 70%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  box-sizing: border-box;
-  font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "MS Mincho", serif;
-  color: #e8e6df;
-}
-
-.ytg-card {
-  width: min(720px, 100%);
-  max-height: calc(100vh - 48px);
-  overflow-y: auto;
-  background: #171a21;
-  border: 1px solid #2a2f3a;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  padding: 32px;
-  box-sizing: border-box;
-}
-
-/* --- ヘッダ --- */
-.ytg-header { text-align: center; margin-bottom: 24px; }
-.ytg-title { font-size: 22px; font-weight: 700; letter-spacing: 0.05em; }
-.ytg-subtitle { font-size: 14px; color: #9aa0ab; margin-top: 6px; }
-.ytg-progress {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 16px;
-}
-.ytg-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #333a47;
-  border: 1px solid #444c5a;
-}
-.ytg-dot.active { background: #d9b25a; border-color: #d9b25a; }
-.ytg-dot.done { background: #5aa06a; border-color: #5aa06a; }
-.ytg-proglabel { font-size: 13px; color: #9aa0ab; margin-top: 8px; }
-
-/* --- 本文 --- */
-.ytg-body { text-align: center; }
-.ytg-hint { font-size: 14px; color: #9aa0ab; margin-bottom: 16px; }
+/* 書き取りクイズ固有のスタイル。dictation.js が生成する要素を対象にする。
+   基盤CSS(core/overlay.css)の後に読み込む前提（.ytg-btn 等を上書きするため）。 */
 
 .ytg-text {
   font-size: 26px;
@@ -71,7 +14,7 @@ html.ytg-lock-scroll body {
   word-break: break-word;
 }
 
-/* 作品タイトルの署名（表示欄の下） */
+/* 作品タイトルの署名（表示欄・入力欄の下） */
 .ytg-cite {
   display: flex;
   align-items: baseline;
@@ -108,6 +51,12 @@ html.ytg-lock-scroll body {
   user-select: none;
 }
 
+/* ヒント: 原文をぼかす。濃淡（漢字かどうか）は分かるが読み取れない程度。
+   ぼかしの強さは blur() の値で調整（大きいほど読みにくい）。 */
+.ytg-blur {
+  filter: blur(6px);
+}
+
 .ytg-input {
   width: 100%;
   box-sizing: border-box;
@@ -128,36 +77,6 @@ html.ytg-lock-scroll body {
   word-break: break-word;
 }
 .ytg-input:focus { border-color: #d9b25a; }
-
-/* --- ボタン --- */
-.ytg-btnrow { display: flex; gap: 12px; justify-content: center; }
-.ytg-btn {
-  font-family: inherit;
-  font-size: 17px;
-  padding: 12px 32px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.05s ease, background 0.15s ease;
-}
-.ytg-btn:active { transform: translateY(1px); }
-.ytg-btn-primary { background: #d9b25a; color: #1a1408; font-weight: 700; }
-.ytg-btn-primary:hover { background: #e6c273; }
-.ytg-btn-ghost {
-  background: transparent;
-  color: #9aa0ab;
-  border: 1px solid #3a4150;
-}
-.ytg-btn-ghost:hover { color: #e8e6df; border-color: #5a6270; }
-
-.ytg-btn-big {
-  font-size: 20px;
-  padding: 18px 28px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.ytg-btn:disabled { cursor: not-allowed; }
 
 /* --- 待機中の「覚えた」: 左から右へ金色に満ちる ---
    背景は最初から .ytg-btn-primary の金のまま。灰色の覆いを上に重ねて隠し、
@@ -186,15 +105,6 @@ html.ytg-lock-scroll body {
   z-index: 1;            /* ラベルを覆いの上に */
 }
 @keyframes ytg-fill-x { to { transform: scaleX(0); } }
-
-/* 縦積みボタン（クリア後の選択画面用） */
-.ytg-btnstack {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: stretch;
-  margin-top: 8px;
-}
 
 /* --- 結果 --- */
 .ytg-result { font-size: 20px; font-weight: 700; margin-bottom: 20px; }

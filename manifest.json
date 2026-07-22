@@ -14,7 +14,7 @@
         "quizzes/dictation/dictation.js",
         "core/host.js"
       ],
-      "css": ["overlay.css"],
+      "css": ["core/overlay.css", "quizzes/dictation/dictation.css"],
       "run_at": "document_start",
       "all_frames": false
     }
@@ -28,7 +28,8 @@
         "config.js",
         "quizzes/dictation/passages.js",
         "quizzes/dictation/dictation.js",
-        "overlay.css"
+        "core/overlay.css",
+        "quizzes/dictation/dictation.css"
       ],
       "matches": ["*://*.youtube.com/*"]
     }
