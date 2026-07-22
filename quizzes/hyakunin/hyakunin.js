@@ -205,11 +205,18 @@
       body.appendChild(buildKami());
 
       // ヒント: ぼかした下の句。初期は非表示。
+      // ボタンを押すたびに表示→1pxずつ薄くなる（最低 BLUR_MIN px）。
+      // 押した後は5秒のクールダウンで無効化され、経過すると再び押せる。
       var hintBox = el("div", "ytg-text ytg-noselect ytg-blur hy-shimo");
       hintBox.textContent = poem().shimo;
       ui.forbidCopy(hintBox);
       hintBox.style.display = "none";
       body.appendChild(hintBox);
+
+      var BLUR_START = 6, BLUR_MIN = 3, HINT_COOLDOWN_MS = 5000;
+      var blurPx = BLUR_START;
+      var hintShown = false;
+      function applyBlur() { hintBox.style.filter = "blur(" + blurPx + "px)"; }
 
       var ta = el("textarea", "ytg-input");
       ta.setAttribute("autocomplete", "off");
@@ -228,9 +235,24 @@
       submit.addEventListener("click", function () { check(ta.value); });
       var hint = el("button", "ytg-btn ytg-btn-ghost", "ヒント");
       hint.addEventListener("click", function () {
-        var shown = hintBox.style.display !== "none";
-        hintBox.style.display = shown ? "none" : "";
-        hint.textContent = shown ? "ヒント" : "ヒントを隠す";
+        if (!hintShown) {
+          hintShown = true;
+          hintBox.style.display = "";
+          applyBlur();
+        } else if (blurPx > BLUR_MIN) {
+          blurPx--;
+          applyBlur();
+        }
+        if (blurPx <= BLUR_MIN) {
+          hint.disabled = true; // これ以上薄くならない
+          hint.textContent = "ヒントを薄く";
+          return;
+        }
+        hint.textContent = "ヒントを薄く";
+        hint.disabled = true; // クールダウン: 5秒後に再び押せる
+        setTimeout(function () {
+          if (hint.isConnected && blurPx > BLUR_MIN) hint.disabled = false;
+        }, HINT_COOLDOWN_MS);
       });
       var reread = el("button", "ytg-btn ytg-btn-ghost", "もう一度見る");
       reread.addEventListener("click", showDisplay);

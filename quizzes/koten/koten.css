@@ -61,10 +61,14 @@
 }
 
 /* ヒント: 原文をぼかす。濃淡（漢字かどうか）は分かるが読み取れない程度。
-   ぼかしの強さは blur() の値で調整（大きいほど読みにくい）。 */
+   初期値は blur(6px)。ヒントボタンを押すたびに1px弱まる（最低3px・5秒クールダウン）。 */
 .ytg-blur {
   filter: blur(6px);
+  transition: filter 0.6s ease; /* 段階変化を滑らかに */
 }
+
+/* ヒントボタンのクールダウン中・上限到達時 */
+.ytg-btn-ghost:disabled { opacity: 0.45; }
 
 .ytg-input {
   width: 100%;

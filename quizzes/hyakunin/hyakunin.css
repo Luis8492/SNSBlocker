@@ -54,10 +54,15 @@
   user-select: none;
 }
 
-/* ヒント: 下の句をぼかす（読み取れないが濃淡は分かる程度） */
+/* ヒント: 下の句をぼかす（読み取れないが濃淡は分かる程度）。
+   初期値は blur(6px)。ヒントボタンを押すたびに1px弱まる（最低3px・5秒クールダウン）。 */
 .ytg-blur {
   filter: blur(6px);
+  transition: filter 0.6s ease; /* 段階変化を滑らかに */
 }
+
+/* ヒントボタンのクールダウン中・上限到達時 */
+.ytg-btn-ghost:disabled { opacity: 0.45; }
 
 .ytg-input {
   width: 100%;
