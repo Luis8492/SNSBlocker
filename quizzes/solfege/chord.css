@@ -93,6 +93,17 @@
   text-align: left;
 }
 
+/* 「正解」表示: 1.2秒見せてから0.6秒でフェードアウト。
+   opacity だけを変え、行の高さは残してレイアウトを揺らさない。 */
+.sf-fadeout {
+  animation: sf-fade 1.8s ease forwards;
+}
+@keyframes sf-fade {
+  0%   { opacity: 1; }
+  67%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 /* --- 結果（他クイズと同値の共通ルール） --------------------------------- */
 .ytg-result { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
 .ytg-ok { color: #7ad18a; }

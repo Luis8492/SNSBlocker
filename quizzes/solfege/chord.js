@@ -213,7 +213,8 @@
       renderHeader();
       body.innerHTML = "";
       if (prevCorrect === true) {
-        body.appendChild(el("div", "ytg-result ytg-ok", "正解"));
+        // しばらく見せてからフェードアウト（消えても行の高さは保ち、レイアウトを揺らさない）
+        body.appendChild(el("div", "ytg-result ytg-ok sf-fadeout", "正解"));
       }
       body.appendChild(el("div", "ytg-hint",
         "同時に鳴る2つの音を聴き取り、鍵盤下の○で2音を選んでください" +
