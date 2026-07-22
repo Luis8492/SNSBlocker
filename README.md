@@ -31,6 +31,7 @@ SNS を見すぎないための Chrome 拡張機能です。
 | 古典文学の書き取り | `koten` | [quizzes/koten/README.md](quizzes/koten/README.md) |
 | 百人一首 | `hyakunin` | [quizzes/hyakunin/README.md](quizzes/hyakunin/README.md) |
 | 重音(2音)の聴音 | `juon` | [quizzes/juon/README.md](quizzes/juon/README.md) |
+| 旋律聴音（4小節の書き取り） | `senritsu` | [quizzes/senritsu/README.md](quizzes/senritsu/README.md) |
 | 詰将棋(3手詰) | `tsume` | [quizzes/tsume/README.md](quizzes/tsume/README.md) |
 | 詰将棋(5手詰) | `tsume5` | 同上（1フォルダから手数別に3プラグインを登録） |
 | 詰将棋(7手詰) | `tsume7` | 同上 |

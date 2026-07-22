@@ -1,0 +1,82 @@
+/* 旋律聴音クイズ固有のスタイル。senritsu.js が生成する要素を対象にする。
+   基盤CSS(core/overlay.css)の後に読み込む前提。配色は基盤の --k-* トークンを使う。
+   五線譜は SVG で描き、線・音符は currentColor（=インク色）を継承する。 */
+
+.se-staffwrap {
+  position: relative; /* 「整列」ボタンの基準 */
+  margin: 12px 0 8px;
+  padding: 10px 8px;
+  background: var(--k-surface);
+  border-left: 3px solid var(--k-accent);
+}
+
+/* 譜面右上の「整列」ボタン（小さめ） */
+.se-align {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 12px;
+  padding: 4px 14px;
+  border-radius: 14px;
+}
+
+.se-staff {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--k-ink);
+  cursor: crosshair;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.se-line { stroke: currentColor; stroke-width: 1; opacity: 0.75; }
+.se-line.se-final { stroke-width: 2.5; }
+.se-clef { font-size: 46px; fill: currentColor; opacity: 0.85; }
+.se-clef-f { font-size: 36px; }
+
+.se-note .se-head { fill: currentColor; }
+.se-note .se-head-half { fill: none; stroke: currentColor; stroke-width: 1.6; } /* 2分は白玉 */
+.se-note .se-stem { stroke: currentColor; stroke-width: 1.6; }
+.se-note .se-ledger { stroke: currentColor; stroke-width: 1; opacity: 0.75; }
+
+/* 置く前のゴースト（縦位置スナップ済みプレビュー） */
+.se-ghost { opacity: 0.35; }
+
+/* 採点結果（自分の音符の正誤のみ。正解の旋律は明かさない） */
+.se-okn .se-head { fill: var(--k-ok); }
+.se-okn .se-head-half { fill: none; stroke: var(--k-ok); }
+.se-okn .se-stem, .se-okn .se-ledger { stroke: var(--k-ok); }
+.se-ngn .se-head { fill: var(--k-ng); }
+.se-ngn .se-head-half { fill: none; stroke: var(--k-ng); }
+.se-ngn .se-stem, .se-ngn .se-ledger { stroke: var(--k-ng); }
+
+/* 音価パレットの選択状態 */
+.se-tools { margin-top: 10px; }
+.se-active {
+  border-color: var(--k-accent);
+  color: var(--k-accent);
+  font-weight: 700;
+}
+
+/* 状態表示 */
+.se-status {
+  min-height: 1.4em;
+  font-size: 13px;
+  color: var(--k-ng);
+  margin: 6px 0 10px;
+  text-align: left;
+}
+
+/* 「正解」表示: しばらく見せてからフェードアウト */
+.se-fadeout { animation: se-fade 1.8s ease forwards; }
+@keyframes se-fade {
+  0%   { opacity: 1; }
+  67%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* --- 結果（他クイズと同値の共通ルール） --------------------------------- */
+.ytg-result { font-size: 18px; font-weight: 700; margin-bottom: 18px; }
+.ytg-ok { color: var(--k-ok); }
+.ytg-ng { color: var(--k-ng); }
