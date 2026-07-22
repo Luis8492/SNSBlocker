@@ -15,13 +15,17 @@
         "quizzes/hyakunin/poems.js",
         "quizzes/hyakunin/hyakunin.js",
         "quizzes/solfege/chord.js",
+        "quizzes/tsume/shogi.js",
+        "quizzes/tsume/problems.js",
+        "quizzes/tsume/tsume.js",
         "core/host.js"
       ],
       "css": [
         "core/overlay.css",
         "quizzes/dictation/dictation.css",
         "quizzes/hyakunin/hyakunin.css",
-        "quizzes/solfege/chord.css"
+        "quizzes/solfege/chord.css",
+        "quizzes/tsume/tsume.css"
       ],
       "run_at": "document_start",
       "all_frames": false
@@ -39,10 +43,14 @@
         "quizzes/hyakunin/poems.js",
         "quizzes/hyakunin/hyakunin.js",
         "quizzes/solfege/chord.js",
+        "quizzes/tsume/shogi.js",
+        "quizzes/tsume/problems.js",
+        "quizzes/tsume/tsume.js",
         "core/overlay.css",
         "quizzes/dictation/dictation.css",
         "quizzes/hyakunin/hyakunin.css",
-        "quizzes/solfege/chord.css"
+        "quizzes/solfege/chord.css",
+        "quizzes/tsume/tsume.css"
       ],
       "matches": ["*://*.youtube.com/*"]
     }
