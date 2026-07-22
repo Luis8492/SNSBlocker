@@ -73,10 +73,7 @@
     });
     var enabledQuizzes = items.enabledQuizzes;
     if (!enabledQuizzes || !enabledQuizzes.length) {
-      // 未設定なら従来の既定（config.activeQuiz）を初期選択として表示する
-      enabledQuizzes = (K.config.activeQuiz && K.quizzes[K.config.activeQuiz])
-        ? [K.config.activeQuiz]
-        : quizIds;
+      enabledQuizzes = quizIds; // 未設定時の既定: 全クイズ（registry.js と同じ）
     }
     buildList(document.getElementById("quizList"), quizzes, enabledQuizzes,
       "enabledQuizzes", "出題プラグインは最低1つ選んでください");

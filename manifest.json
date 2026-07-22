@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "description": "SNSを開くとクイズ（古典文学の書き取り・百人一首・聴音・詰将棋）を出題し、全問正解するまでブロックする見すぎ防止ツール。YouTube・X・Facebook・Instagram・TikTok・Reddit対応。",
   "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "options_ui": {
     "page": "options.html",
     "open_in_tab": false
