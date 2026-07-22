@@ -3,6 +3,12 @@
   "name": "SNSQuizLocker",
   "version": "1.0.0",
   "description": "SNSを開くとクイズ（古典文学の書き取り・百人一首・聴音・詰将棋）を出題し、全問正解するまでブロックする見すぎ防止ツール。YouTube・X・Facebook・Instagram・TikTok・Reddit対応。",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "permissions": ["storage"],
   "background": {
     "service_worker": "background.js"
@@ -12,8 +18,13 @@
     "open_in_tab": false
   },
   "action": {
-    "default_title": "出題プラグインの選択",
-    "default_popup": "options.html"
+    "default_title": "SNSQuizLocker の設定",
+    "default_popup": "options.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    }
   },
   "content_scripts": [
     {
