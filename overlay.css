@@ -112,9 +112,12 @@ html.ytg-lock-scroll body {
   width: 100%;
   box-sizing: border-box;
   font-family: inherit;
-  font-size: 22px;
-  line-height: 1.8;
-  padding: 20px;
+  /* 表示欄(.ytg-text)と同じ font-size / line-height / padding に揃える。
+     こうすると1行あたりの文字数＝折り返し位置が一致し、
+     「表示のときここまで文字があった」という記憶と入力中の見た目がずれない。 */
+  font-size: 26px;
+  line-height: 1.9;
+  padding: 28px;
   background: #1e222b;
   color: #e8e6df;
   border: 1px solid #3a4150;
@@ -122,6 +125,7 @@ html.ytg-lock-scroll body {
   resize: vertical;
   margin-bottom: 20px;
   outline: none;
+  word-break: break-word;
 }
 .ytg-input:focus { border-color: #d9b25a; }
 

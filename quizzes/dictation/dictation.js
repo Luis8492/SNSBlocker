@@ -120,6 +120,14 @@
       });
     }
 
+    // 作品タイトルの署名（表示欄・入力欄の両方の下に出す）。
+    function buildCite() {
+      var cite = el("div", "ytg-cite");
+      cite.appendChild(el("span", "ytg-cite-title", "『" + passage.title + "』"));
+      cite.appendChild(el("span", "ytg-cite-author", passage.author));
+      return cite;
+    }
+
     // 覚える画面
     function showDisplay() {
       renderHeader();
@@ -131,11 +139,7 @@
       ui.forbidCopy(textBox);
       body.appendChild(textBox);
 
-      // 作品タイトルを表示欄の下にカッコよく。
-      var cite = el("div", "ytg-cite");
-      cite.appendChild(el("span", "ytg-cite-title", "『" + passage.title + "』"));
-      cite.appendChild(el("span", "ytg-cite-author", passage.author));
-      body.appendChild(cite);
+      body.appendChild(buildCite());
 
       var btn = el("button", "ytg-btn ytg-btn-primary", "覚えた");
       btn.addEventListener("click", showInput);
@@ -162,6 +166,8 @@
         }
       });
       body.appendChild(ta);
+
+      body.appendChild(buildCite());
 
       var row = el("div", "ytg-btnrow");
       var submit = el("button", "ytg-btn ytg-btn-primary", "Submit");
