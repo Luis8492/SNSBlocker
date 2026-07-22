@@ -6,10 +6,11 @@
 //
 // activeQuiz には、各クイズが registerQuiz で登録した id を指定する。
 //   "dictation" : 古典文学の書き取り
+//   "hyakunin"  : 百人一首の書き取り（上の句を見て下の句を書く）
 //   （将来）      "shogi" : 次の一手／詰将棋、"solfege" : 聴音／リズム など
 (function () {
   "use strict";
   var K = window.Kansho || (window.Kansho = {});
   K.config = K.config || {};
-  K.config.activeQuiz = "dictation";
+  K.config.activeQuiz = "hyakunin";
 })();

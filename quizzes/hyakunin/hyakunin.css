@@ -1,0 +1,124 @@
+/* 百人一首クイズ固有のスタイル。hyakunin.js が生成する要素を対象にする。
+   基盤CSS(core/overlay.css)の後に読み込む前提。
+   プラグインとして自己完結させるため、dictation.css と共通のルール
+   （.ytg-text / .ytg-input / diff 等）も同値でここに持つ
+   （フォーク運用で quizzes/dictation を消しても崩れない）。 */
+
+.ytg-text {
+  font-size: 26px;
+  line-height: 1.9;
+  padding: 28px;
+  background: #1e222b;
+  border: 1px solid #2a2f3a;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 歌番号・作者の署名（表示欄・入力欄の下） */
+.ytg-cite {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: 0 6px 28px;
+  position: relative;
+}
+.ytg-cite::before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  margin-right: 4px;
+  background: linear-gradient(to right, transparent, #d9b25a88);
+}
+.ytg-cite-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #e6c273;
+  text-shadow: 0 1px 8px rgba(217, 178, 90, 0.25);
+}
+.ytg-cite-author {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  color: #9aa0ab;
+  font-style: italic;
+}
+
+.ytg-noselect {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* ヒント: 下の句をぼかす（読み取れないが濃淡は分かる程度） */
+.ytg-blur {
+  filter: blur(6px);
+}
+
+.ytg-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  /* 表示欄(.ytg-text)と同じ font-size / line-height / padding に揃える */
+  font-size: 26px;
+  line-height: 1.9;
+  padding: 28px;
+  background: #1e222b;
+  color: #e8e6df;
+  border: 1px solid #3a4150;
+  border-radius: 12px;
+  resize: vertical;
+  margin-bottom: 20px;
+  outline: none;
+  word-break: break-word;
+}
+.ytg-input:focus { border-color: #d9b25a; }
+
+/* --- 上の句 / 下の句 --------------------------------------------------- */
+/* 欄の左上に添える小ラベル */
+.hy-label {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: #9aa0ab;
+  margin: 0 6px 4px;
+  text-align: left;
+}
+
+/* 上の句: 常に表示される手掛かり。覚える対象（下の句）より控えめにする。 */
+.hy-kami {
+  color: #b8bdc7;
+  background: #191d25;
+  border-style: dashed;
+}
+
+/* 下の句: 覚える対象。基準の .ytg-text のまま（強調は色に頼らない）。 */
+
+/* --- 結果 --- */
+.ytg-result { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+.ytg-ok { color: #7ad18a; }
+.ytg-ng { color: #e88a8a; }
+
+/* --- diff表示 --- */
+.ytg-diff {
+  font-size: 24px;
+  line-height: 2;
+  padding: 24px;
+  background: #1e222b;
+  border: 1px solid #2a2f3a;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.ytg-eq  { color: #cfd3da; }
+.ytg-ins { color: #e88a8a; text-decoration: line-through; background: rgba(232, 138, 138, 0.15); }
+.ytg-del { color: #7ad18a; background: rgba(122, 209, 138, 0.18); border-radius: 3px; }
+.ytg-legend { font-size: 13px; color: #9aa0ab; margin-bottom: 20px; }
+.ytg-legend .ytg-eq  { color: #cfd3da; }
+.ytg-legend .ytg-ins { text-decoration: none; background: none; color: #e88a8a; }
+.ytg-legend .ytg-del { background: none; color: #7ad18a; }
