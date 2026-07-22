@@ -23,6 +23,9 @@
   // 選択パネルの保存値。null = 未ロード/未設定（activeQuiz にフォールバック）。
   K.config.enabledQuizzes = null;
 
+  // 対象SNSの保存値。null = 未設定（YouTube のみ＝従来どおり。sites.js 参照）。
+  K.config.enabledSites = null;
+
   // ストレージ読み込みは非同期なので、出題開始側（host.js / continue.js）は
   // onReady で読み込み完了を待ってから getActiveQuiz を呼ぶ。
   var ready = false, cbs = [];
@@ -33,15 +36,16 @@
   }
 
   try {
-    chrome.storage.sync.get({ enabledQuizzes: null }, function (items) {
+    chrome.storage.sync.get({ enabledQuizzes: null, enabledSites: null }, function (items) {
       K.config.enabledQuizzes = items.enabledQuizzes;
+      K.config.enabledSites = items.enabledSites;
       fire();
     });
     // パネルでの変更を開いているタブにも反映する（次の関所/ラウンドから効く）
     chrome.storage.onChanged.addListener(function (changes, area) {
-      if (area === "sync" && changes.enabledQuizzes) {
-        K.config.enabledQuizzes = changes.enabledQuizzes.newValue;
-      }
+      if (area !== "sync") return;
+      if (changes.enabledQuizzes) K.config.enabledQuizzes = changes.enabledQuizzes.newValue;
+      if (changes.enabledSites) K.config.enabledSites = changes.enabledSites.newValue;
     });
   } catch (e) {
     fire(); // chrome.storage が無い環境（テスト等）では即 ready

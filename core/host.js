@@ -1,7 +1,8 @@
-// Kansho — YouTube関所（基盤層のホスト）。
-// 動画ページを検知したら画面をオーバーレイし、有効なクイズ形式に出題を委譲する。
-// どのクイズ形式かは知らない（Kansho.getActiveQuiz が config.activeQuiz で決める）。
-// 全問クリアで「動画を見る」か「YouTubeはやめてもっと続ける!!!」を選ばせる。
+// Kansho — 関所（基盤層のホスト）。
+// ロック対象ページを検知したら画面をオーバーレイし、有効なクイズ形式に出題を委譲する。
+// どのサイトか（sites.js のアダプタが判定）も、どのクイズ形式か
+// （Kansho.getActiveQuiz が決める）も知らない。
+// 全問クリアで「先へ進む」か「もっと続ける!!!」を選ばせる。
 (function () {
   "use strict";
 
@@ -11,23 +12,16 @@
 
   var overlay = null;     // オーバーレイ要素
   var card = null;        // クイズの描画先
-  var pauseTimer = null;  // 背後の動画を止め続けるタイマー
-  var currentId = null;   // ゲート中の動画ID
+  var pauseTimer = null;  // 背後のメディアを止め続けるタイマー
+  var currentId = null;   // ゲート中のロックキー（site.id + ":" + lockId）
 
-  // ---- 動画IDの判定 ------------------------------------------------------
-  function getVideoId(href) {
-    try {
-      var u = new URL(href);
-      if (u.pathname === "/watch") {
-        var v = u.searchParams.get("v");
-        return v ? "v:" + v : null;
-      }
-      var m = u.pathname.match(/^\/shorts\/([^/?#]+)/);
-      if (m) return "s:" + m[1];
-      return null;
-    } catch (e) {
-      return null;
-    }
+  // ---- ロック対象の判定（サイトアダプタに委譲） --------------------------
+  // 返り値: "youtube:v:xxxx" / "x:site" のようなロックキー。対象外なら null。
+  function currentLockKey() {
+    var site = K.getActiveSite(location.hostname);
+    if (!site) return null;
+    var id = site.lockId(location.href);
+    return id ? site.id + ":" + id : null;
   }
 
   // ---- 解除済みIDの記録（セッション単位） --------------------------------
@@ -108,27 +102,27 @@
       }
     });
 
-    var watch = el("button", "ytg-btn ytg-btn-ghost", "ソーシャルネットワークへ進む");
-    watch.addEventListener("click", function () {
+    var proceed = el("button", "ytg-btn ytg-btn-ghost", "ソーシャルネットワークへ進む");
+    proceed.addEventListener("click", function () {
       markUnlocked(currentId);
       removeOverlay();
     });
 
     var stack = el("div", "ytg-btnstack");
     stack.appendChild(quit);
-    stack.appendChild(watch);
+    stack.appendChild(proceed);
     b.appendChild(stack);
   }
 
   // ---- ナビゲーション検知 ------------------------------------------------
   function onLocationChange() {
-    var id = getVideoId(location.href);
-    if (id) {
-      if (isUnlocked(id)) { removeOverlay(); return; }
-      if (overlay && currentId === id) return; // 既に同じ動画を出題中
-      startGate(id);
+    var key = currentLockKey();
+    if (key) {
+      if (isUnlocked(key)) { removeOverlay(); return; }
+      if (overlay && currentId === key) return; // 既に同じ対象を出題中
+      startGate(key);
     } else {
-      removeOverlay(); // 動画ページ以外に移動したら閉じる
+      removeOverlay(); // ロック対象ページ以外に移動したら閉じる
     }
   }
 
@@ -137,6 +131,8 @@
     if (location.href !== lastHref) { lastHref = location.href; onLocationChange(); }
   }
 
+  // yt-navigate-finish は YouTube 固有のSPA遷移イベント。他サイトのSPA遷移は
+  // 500ms の href ポーリングが拾う（X・Instagram 等は history API 遷移のため）。
   window.addEventListener("yt-navigate-finish", onLocationChange, true);
   window.addEventListener("popstate", checkNav);
   setInterval(checkNav, 500);
@@ -144,5 +140,8 @@
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", onLocationChange);
   }
-  onLocationChange();
+  // enabledSites の読み込み（chrome.storage・非同期）を待ってから初回判定する。
+  // YouTube 以外のサイトは設定値が無いと対象かどうか判定できないため。
+  if (K.config && K.config.onReady) K.config.onReady(onLocationChange);
+  else onLocationChange();
 })();

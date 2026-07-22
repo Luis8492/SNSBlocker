@@ -43,6 +43,7 @@
       font-weight: 700;
       letter-spacing: 0.12em;
     }
+    h1.second { margin-top: 18px; }
     label.quiz {
       display: flex;
       align-items: center;
@@ -87,16 +88,23 @@
 </head>
 <body>
   <h1>出題プラグイン</h1>
-  <div id="list"></div>
-  <div id="status"></div>
+  <div id="quizList"></div>
   <p class="note">
-    複数選択すると、動画を開くたびにランダムでいずれかが出題されます。<br>
+    複数選択すると、関所ごとにランダムでいずれかが出題されます。<br>
     1ラウンド（3問など）は同じプラグインから出ます。
   </p>
-  <!-- クイズの一覧を得るため、基盤と全クイズを読み込む（host は読み込まない） -->
+  <h1 class="second">対象SNS</h1>
+  <div id="siteList"></div>
+  <p class="note">
+    YouTube は動画ごと、他のSNSはサイト全体が対象です。<br>
+    解除はタブを閉じるまで有効で、開き直すと再度出題されます。
+  </p>
+  <div id="status"></div>
+  <!-- クイズ・サイトの一覧を得るため、基盤と全クイズを読み込む（host は読み込まない） -->
   <script src="core/registry.js"></script>
   <script src="core/ui.js"></script>
   <script src="config.js"></script>
+  <script src="core/sites.js"></script>
   <script src="quizzes/koten/passages.js"></script>
   <script src="quizzes/koten/koten.js"></script>
   <script src="quizzes/hyakunin/poems.js"></script>

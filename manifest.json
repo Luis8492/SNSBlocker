@@ -14,11 +14,21 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://www.youtube.com/*", "*://m.youtube.com/*"],
+      "matches": [
+        "*://www.youtube.com/*",
+        "*://m.youtube.com/*",
+        "*://*.x.com/*",
+        "*://*.twitter.com/*",
+        "*://*.facebook.com/*",
+        "*://*.instagram.com/*",
+        "*://*.tiktok.com/*",
+        "*://*.reddit.com/*"
+      ],
       "js": [
         "core/registry.js",
         "core/ui.js",
         "config.js",
+        "core/sites.js",
         "quizzes/koten/passages.js",
         "quizzes/koten/koten.js",
         "quizzes/hyakunin/poems.js",
@@ -47,6 +57,7 @@
         "core/registry.js",
         "core/ui.js",
         "config.js",
+        "core/sites.js",
         "quizzes/koten/passages.js",
         "quizzes/koten/koten.js",
         "quizzes/hyakunin/poems.js",
@@ -61,7 +72,15 @@
         "quizzes/juon/juon.css",
         "quizzes/tsume/tsume.css"
       ],
-      "matches": ["*://*.youtube.com/*"]
+      "matches": [
+        "*://*.youtube.com/*",
+        "*://*.x.com/*",
+        "*://*.twitter.com/*",
+        "*://*.facebook.com/*",
+        "*://*.instagram.com/*",
+        "*://*.tiktok.com/*",
+        "*://*.reddit.com/*"
+      ]
     }
   ]
 }
