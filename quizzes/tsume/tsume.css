@@ -1,6 +1,7 @@
 /* 詰将棋クイズ固有のスタイル。tsume.js が生成する要素を対象にする。
-   基盤CSS(core/overlay.css)の後に読み込む前提。
-   プラグインとして自己完結させるため、共通の結果表示ルールも同値でここに持つ。 */
+   基盤CSS(core/overlay.css)の後に読み込む前提。配色は基盤の --k-* トークンを使う。
+   盤・駒・持駒チップは将棋盤実物の木の色なので両モード共通の固定色。
+   周辺のラベル・状態表示にトークンを使う。 */
 
 /* --- 盤 ------------------------------------------------------------------ */
 .ts-board {
@@ -38,8 +39,8 @@
 .ts-gote { transform: rotate(180deg); display: inline-block; }
 .ts-promoted { color: #a3231d; }
 
-/* 選択中の駒・直前の着手・候補マス */
-.ts-selsq { outline: 3px solid #d9b25a; outline-offset: -3px; }
+/* 選択中の駒・直前の着手・候補マス（木地の上の固定色） */
+.ts-selsq { outline: 3px solid #b3722e; outline-offset: -3px; }
 .ts-last { background: #d9ad63; }
 .ts-cand { background: #f0dfae; }
 .ts-cand::after {
@@ -70,7 +71,7 @@
 }
 .ts-hand-label {
   font-size: 12px;
-  color: #9aa0ab;
+  color: var(--k-sub);
   letter-spacing: 0.1em;
   white-space: nowrap;
 }
@@ -80,7 +81,7 @@
   border-radius: 8px;
   background: #e3c78f;
   color: #1c1508;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   border: 1px solid #8a744e;
 }
@@ -89,9 +90,9 @@
 .ts-chip-none {
   background: none;
   border: none;
-  color: #6b7280;
+  color: var(--k-sub);
   font-weight: 400;
-  font-size: 13px;
+  font-size: 12.5px;
 }
 
 /* --- 状態表示 ------------------------------------------------------------ */
@@ -99,9 +100,9 @@
   min-height: 1.6em;
   margin: 6px 0 10px;
 }
-.ts-msg { font-size: 14px; color: #e8c988; margin-right: 8px; }
+.ts-msg { font-size: 13px; color: var(--k-sub); margin-right: 8px; }
 
-/* 詰み上がり時に盤面中央へ重ねる「正解」 */
+/* 詰み上がり時に盤面中央へ重ねる「正解」（木地の上なので両モード共通の暗幕） */
 .ts-correct-overlay {
   position: absolute;
   inset: 0;
@@ -112,8 +113,8 @@
   font-weight: 700;
   letter-spacing: 0.3em;
   text-indent: 0.3em; /* letter-spacing の右余白ぶんを補正して中央に */
-  color: #7ad18a;
-  background: rgba(15, 17, 21, 0.55);
+  color: #a8e0b4;
+  background: rgba(20, 22, 26, 0.55);
   text-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
   pointer-events: none;
   z-index: 3;
@@ -128,6 +129,6 @@
 }
 
 /* --- 結果（他クイズと同値の共通ルール） ----------------------------------- */
-.ytg-result { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
-.ytg-ok { color: #7ad18a; }
-.ytg-ng { color: #e88a8a; }
+.ytg-result { font-size: 18px; font-weight: 700; margin-bottom: 18px; }
+.ytg-ok { color: var(--k-ok); }
+.ytg-ng { color: var(--k-ng); }

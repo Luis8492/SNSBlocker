@@ -1,17 +1,19 @@
 /* 百人一首クイズ固有のスタイル。hyakunin.js が生成する要素を対象にする。
-   基盤CSS(core/overlay.css)の後に読み込む前提。
+   基盤CSS(core/overlay.css)の後に読み込む前提。配色は基盤の --k-* トークンを使う。
    プラグインとして自己完結させるため、koten.css と共通のルール
    （.ytg-text / .ytg-input / diff 等）も同値でここに持つ
    （フォーク運用で quizzes/koten を消しても崩れない）。 */
 
+/* 本文欄（明朝＋背表紙線） */
 .ytg-text {
-  font-size: 26px;
-  line-height: 1.9;
-  padding: 28px;
-  background: #1e222b;
-  border: 1px solid #2a2f3a;
-  border-radius: 12px;
-  margin-bottom: 12px;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "MS PMincho", serif;
+  font-size: 22px;
+  line-height: 2.1;
+  letter-spacing: 0.03em;
+  padding: 16px 20px;
+  background: var(--k-surface);
+  border-left: 3px solid var(--k-accent);
+  margin-bottom: 8px;
   text-align: left;
   white-space: pre-wrap;
   word-break: break-word;
@@ -22,30 +24,12 @@
   display: flex;
   align-items: baseline;
   justify-content: flex-end;
-  gap: 12px;
-  margin: 0 6px 28px;
-  position: relative;
+  gap: 8px;
+  margin: 6px 2px 24px;
+  font-size: 12.5px;
+  color: var(--k-sub);
 }
-.ytg-cite::before {
-  content: "";
-  flex: 1;
-  height: 1px;
-  margin-right: 4px;
-  background: linear-gradient(to right, transparent, #d9b25a88);
-}
-.ytg-cite-title {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: #e6c273;
-  text-shadow: 0 1px 8px rgba(217, 178, 90, 0.25);
-}
-.ytg-cite-author {
-  font-size: 14px;
-  letter-spacing: 0.08em;
-  color: #9aa0ab;
-  font-style: italic;
-}
+.ytg-cite-title::after { content: "｜"; margin-left: 8px; }
 
 .ytg-noselect {
   -webkit-user-select: none;
@@ -61,69 +45,68 @@
   transition: filter 0.6s ease; /* 段階変化を滑らかに */
 }
 
-/* ヒントボタンのクールダウン中・上限到達時 */
-.ytg-btn-ghost:disabled { opacity: 0.45; }
-
+/* 入力欄: 表示欄(.ytg-text)と同じ書体・字送りに揃える */
 .ytg-input {
   width: 100%;
   box-sizing: border-box;
-  font-family: inherit;
-  /* 表示欄(.ytg-text)と同じ font-size / line-height / padding に揃える */
-  font-size: 26px;
-  line-height: 1.9;
-  padding: 28px;
-  background: #1e222b;
-  color: #e8e6df;
-  border: 1px solid #3a4150;
-  border-radius: 12px;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "MS PMincho", serif;
+  font-size: 22px;
+  line-height: 2.1;
+  letter-spacing: 0.03em;
+  padding: 16px 20px;
+  background: var(--k-card);
+  color: var(--k-ink);
+  border: 1.5px solid var(--k-line);
+  border-radius: 8px;
   resize: vertical;
   margin-bottom: 20px;
   outline: none;
   word-break: break-word;
 }
-.ytg-input:focus { border-color: #d9b25a; }
+.ytg-input:focus { border-color: var(--k-accent); }
 
 /* --- 上の句 / 下の句 --------------------------------------------------- */
 /* 欄の左上に添える小ラベル */
 .hy-label {
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.2em;
-  color: #9aa0ab;
-  margin: 0 6px 4px;
+  color: var(--k-sub);
+  margin: 0 4px 4px;
   text-align: left;
 }
 
-/* 上の句: 常に表示される手掛かり。覚える対象（下の句）より控えめにする。 */
+/* 上の句: 常に表示される手掛かり。覚える対象（下の句）より控えめにする。
+   背表紙線をアクセントでなく罫色にして「覚える対象は下の句」を示す。 */
 .hy-kami {
-  color: #b8bdc7;
-  background: #191d25;
-  border-style: dashed;
+  border-left-color: var(--k-line);
+  opacity: 0.8;
 }
 
-/* 下の句: 覚える対象。基準の .ytg-text のまま（強調は色に頼らない）。 */
+/* 下の句: 覚える対象。基準の .ytg-text のまま（アクセントの背表紙線）。 */
 
 /* --- 結果 --- */
-.ytg-result { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
-.ytg-ok { color: #7ad18a; }
-.ytg-ng { color: #e88a8a; }
+.ytg-result { font-size: 18px; font-weight: 700; margin-bottom: 18px; }
+.ytg-ok { color: var(--k-ok); }
+.ytg-ng { color: var(--k-ng); }
 
-/* --- diff表示 --- */
+/* --- diff表示（本文と同じ扱い） --- */
 .ytg-diff {
-  font-size: 24px;
-  line-height: 2;
-  padding: 24px;
-  background: #1e222b;
-  border: 1px solid #2a2f3a;
-  border-radius: 12px;
-  margin-bottom: 16px;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "MS PMincho", serif;
+  font-size: 21px;
+  line-height: 2.1;
+  letter-spacing: 0.03em;
+  padding: 16px 20px;
+  background: var(--k-surface);
+  border-left: 3px solid var(--k-accent);
+  margin-bottom: 14px;
   text-align: left;
   white-space: pre-wrap;
   word-break: break-word;
 }
-.ytg-eq  { color: #cfd3da; }
-.ytg-ins { color: #e88a8a; text-decoration: line-through; background: rgba(232, 138, 138, 0.15); }
-.ytg-del { color: #7ad18a; background: rgba(122, 209, 138, 0.18); border-radius: 3px; }
-.ytg-legend { font-size: 13px; color: #9aa0ab; margin-bottom: 20px; }
-.ytg-legend .ytg-eq  { color: #cfd3da; }
-.ytg-legend .ytg-ins { text-decoration: none; background: none; color: #e88a8a; }
-.ytg-legend .ytg-del { background: none; color: #7ad18a; }
+.ytg-eq  { color: var(--k-ink); }
+.ytg-ins { color: var(--k-ng); text-decoration: line-through; background: var(--k-ng-bg); }
+.ytg-del { color: var(--k-ok); background: var(--k-ok-bg); border-radius: 3px; }
+.ytg-legend { font-size: 12.5px; color: var(--k-sub); margin-bottom: 18px; }
+.ytg-legend .ytg-eq  { color: var(--k-ink); }
+.ytg-legend .ytg-ins { text-decoration: none; background: none; color: var(--k-ng); }
+.ytg-legend .ytg-del { background: none; color: var(--k-ok); }

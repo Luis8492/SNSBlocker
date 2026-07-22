@@ -18,8 +18,8 @@
 
   // クイズ形式を登録する。
   //   spec.id     : 一意なID（config.activeQuiz と対応させる）
-  //   spec.title  : 表示名（ヘッダに出す）
-  //   spec.icon   : ヘッダのアイコン絵文字（省略可）
+  //   spec.title  : 表示名（ヘッダ・選択パネルに出す）
+  //   spec.badge  : 判子バッジ用の漢字一字（例 "古"。絵文字は使わない）
   //   spec.start  : function(container, ctx) — 1ラウンドを container 内に構築する。
   //                 全問クリアで ctx.onComplete({ container, body, ui, el, restart }) を呼ぶ。
   //                 ctx.onComplete は基盤側が渡すコールバック（クリア後画面の描画を担当）。

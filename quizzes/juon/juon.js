@@ -19,7 +19,7 @@
   var ui = K.ui;
   var el = ui.el;
 
-  var ICON = "🎹";
+  var BADGE = "重";
   var TITLE = "重音(2音)";
   var QUESTIONS_PER_ROUND = 3;
 
@@ -181,7 +181,7 @@
 
     function renderHeader() {
       ui.renderHeader(header, {
-        icon: ICON, title: TITLE,
+        badge: BADGE, title: TITLE,
         total: questions.length, index: state.index
       });
     }
@@ -223,7 +223,7 @@
       var selected = [];
 
       var playRow = el("div", "ytg-btnrow");
-      var play = el("button", "ytg-btn ytg-btn-primary", "♪ 出題を聴く");
+      var play = el("button", "ytg-btn ytg-btn-primary", "出題を聴く");
       play.addEventListener("click", function () { playChord(answerMidis(), 2.2); });
       var playLow = el("button", "ytg-btn ytg-btn-ghost", "ヒント: 下の音だけ聴く");
       playLow.addEventListener("click", function () { playNote(question().bottom, 1.6); });
@@ -299,7 +299,7 @@
       body.appendChild(legend);
 
       var row = el("div", "ytg-btnrow");
-      var replay = el("button", "ytg-btn ytg-btn-ghost", "♪ もう一度聴く");
+      var replay = el("button", "ytg-btn ytg-btn-ghost", "もう一度聴く");
       replay.addEventListener("click", function () { playChord(ans, 2.2); });
       var retry = el("button", "ytg-btn ytg-btn-primary", "やり直す");
       retry.addEventListener("click", showQuestion);
@@ -337,7 +337,7 @@
   K.registerQuiz({
     id: "juon",
     title: TITLE,
-    icon: ICON,
+    badge: BADGE,
     start: start,
     // テスト用に出題生成と音名変換を公開（任意）。
     util: { makeQuestion: makeQuestion, noteName: noteName, midiToFreq: midiToFreq }

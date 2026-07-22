@@ -29,24 +29,24 @@
   }
 
   // ---- 進捗ヘッダ --------------------------------------------------------
-  // タイトル＋進捗ドット＋「問 i / n」を描画する。
-  //   opts: { icon, title, total, index }
+  // 判子バッジ（漢字一字）＋タイトル＋スタンプ進捗を描画する。
+  //   opts: { badge, title, total, index }
+  // スタンプは 済=✓（塗り）/ 現在=番号（アクセント枠）/ 未着手=番号（薄枠）。
   // 「1ラウンド＝n問」という進捗の考え方は多くのクイズ形式で共通なので基盤に置く。
   // 各クイズは total / index を自分の意味で渡すだけでよい。
   function renderHeader(header, opts) {
     header.innerHTML = "";
-    header.appendChild(el("div", "ytg-title",
-      (opts.icon ? opts.icon + " " : "") + opts.title));
+    header.appendChild(el("span", "ytg-badge", opts.badge || ""));
+    header.appendChild(el("div", "ytg-title", opts.title));
 
-    var prog = el("div", "ytg-progress");
+    var stamps = el("div", "ytg-stamps");
     for (var i = 0; i < opts.total; i++) {
-      prog.appendChild(el("span", "ytg-dot" +
-        (i < opts.index ? " done" : (i === opts.index ? " active" : ""))));
+      var done = i < opts.index;
+      stamps.appendChild(el("span", "ytg-st" +
+        (done ? " done" : (i === opts.index ? " now" : "")),
+        done ? "✓" : String(i + 1)));
     }
-    header.appendChild(prog);
-    // 完了時は index が total まで進むが、ラベルは total で頭打ちにして "3/3" を保つ。
-    header.appendChild(el("div", "ytg-proglabel",
-      "問 " + Math.min(opts.index + 1, opts.total) + " / " + opts.total));
+    header.appendChild(stamps);
   }
 
   K.ui = {

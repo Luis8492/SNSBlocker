@@ -12,7 +12,7 @@
   var ui = K.ui;
   var el = ui.el;
 
-  var ICON = "📜";
+  var BADGE = "古";
   var TITLE = "古典文学";
   var ARMING_MS = 5000; // 「覚えた」が押せるようになるまでの待機（円形ゲージが満ちる時間）
 
@@ -149,7 +149,7 @@
 
     function renderHeader() {
       ui.renderHeader(header, {
-        icon: ICON, title: TITLE,
+        badge: BADGE, title: TITLE,
         total: passage.segments.length, index: state.index
       });
     }
@@ -157,7 +157,7 @@
     // 作品タイトルの署名（表示欄・入力欄の両方の下に出す）。
     function buildCite() {
       var cite = el("div", "ytg-cite");
-      cite.appendChild(el("span", "ytg-cite-title", "『" + passage.title + "』"));
+      cite.appendChild(el("span", "ytg-cite-title", passage.title));
       cite.appendChild(el("span", "ytg-cite-author", passage.author));
       return cite;
     }
@@ -359,7 +359,7 @@
   K.registerQuiz({
     id: "koten",
     title: TITLE,
-    icon: ICON,
+    badge: BADGE,
     start: start,
     // 採点ユーティリティを外から使いたい場合のために公開（任意）。
     util: { normalize: normalize, isCorrect: isCorrect }

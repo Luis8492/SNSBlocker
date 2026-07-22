@@ -1,7 +1,7 @@
-/* 重音聴音クイズ固有のスタイル。juon.js が生成する要素を対象にする。
-   基盤CSS(core/overlay.css)の後に読み込む前提。
-   プラグインとして自己完結させるため、他クイズと共通の結果表示ルールも
-   同値でここに持つ。 */
+/* 重音(2音)クイズ固有のスタイル。juon.js が生成する要素を対象にする。
+   基盤CSS(core/overlay.css)の後に読み込む前提。配色は基盤の --k-* トークンを使う。
+   鍵盤の白鍵・黒鍵はピアノ実物の色なので両モード共通の固定色。
+   選択○・結果の色付けにトークンを使う。 */
 
 /* --- ピアノ鍵盤 --------------------------------------------------------- */
 .ju-kbd {
@@ -22,23 +22,23 @@
 
 .ju-white {
   height: 100%;
-  background: #f2efe6;
-  border: 1px solid #3a4150;
+  background: #f7f5ef;
+  border: 1px solid #8f9089;
   z-index: 1;
 }
-.ju-white:hover { background: #fff9e8; }
-.ju-white:active { background: #ead9a8; }
+.ju-white:hover { background: #fffdf6; }
+.ju-white:active { background: #ece5d2; }
 
 .ju-black {
   height: 60%;
-  background: #23262d;
-  border: 1px solid #000;
+  background: #26262a;
+  border: 1px solid #111;
   border-top: none;
   z-index: 2;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
 }
-.ju-black:hover { background: #333845; }
-.ju-black:active { background: #4a4130; }
+.ju-black:hover { background: #35353b; }
+.ju-black:active { background: #45454c; }
 
 /* C の音名ラベル（位置の目印） */
 .ju-keylabel {
@@ -48,7 +48,7 @@
   width: 100%;
   text-align: center;
   font-size: 10px;
-  color: #6b7280;
+  color: #8f9089;
   pointer-events: none;
 }
 
@@ -62,33 +62,34 @@
   height: 15px;
   border-radius: 50%;
   box-sizing: border-box;
-  border: 2px solid #8a92a0;
+  border: 2px solid #8f9089;
   background: transparent;
 }
-.ju-black .ju-dot { border-color: #b8bdc7; }
-.ju-dot:hover { border-color: #d9b25a; }
+.ju-black .ju-dot { border-color: #b9b9bd; }
+.ju-dot:hover { border-color: var(--k-accent); }
 
-/* 選択中: ○が金色に埋まり、鍵盤も淡く光る */
+/* 選択中: ○がアクセント色に埋まり、鍵盤も淡く色づく */
 .ju-sel .ju-dot {
-  background: #d9b25a;
-  border-color: #d9b25a;
+  background: var(--k-accent);
+  border-color: var(--k-accent);
 }
-.ju-white.ju-sel { background: #f7e9c4; }
-.ju-black.ju-sel { background: #57492a; }
+.ju-white.ju-sel { background: color-mix(in srgb, var(--k-accent) 22%, #f7f5ef); }
+.ju-black.ju-sel { background: color-mix(in srgb, var(--k-accent) 45%, #26262a); }
 
-/* --- 答え合わせの色付け（自分の選んだ音の正誤のみ。正解の音は明かさない） */
+/* --- 答え合わせの色付け（自分の選んだ音の正誤のみ。正解の音は明かさない）
+   鍵盤上の固定色に載せる意味色なので両モード共通。 */
 .ju-white.ju-ok { background: #bfe3c6; border-color: #4d8a59; }
 .ju-black.ju-ok { background: #2f5a38; }
 .ju-white.ju-ng { background: #ecc4c4; border-color: #a05252; }
 .ju-black.ju-ng { background: #6a3232; }
-.ju-legend-ok { color: #7ad18a; }
-.ju-legend-ng { color: #e88a8a; }
+.ju-legend-ok { color: var(--k-ok); }
+.ju-legend-ng { color: var(--k-ng); }
 
 /* --- 状態表示（「2音選んでください」等） -------------------------------- */
 .ju-status {
   min-height: 1.4em;
   font-size: 13px;
-  color: #e88a8a;
+  color: var(--k-ng);
   margin-bottom: 10px;
   text-align: left;
 }
@@ -105,7 +106,7 @@
 }
 
 /* --- 結果（他クイズと同値の共通ルール） --------------------------------- */
-.ytg-result { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
-.ytg-ok { color: #7ad18a; }
-.ytg-ng { color: #e88a8a; }
-.ytg-legend { font-size: 13px; color: #9aa0ab; margin-bottom: 20px; }
+.ytg-result { font-size: 18px; font-weight: 700; margin-bottom: 18px; }
+.ytg-ok { color: var(--k-ok); }
+.ytg-ng { color: var(--k-ng); }
+.ytg-legend { font-size: 12.5px; color: var(--k-sub); margin-bottom: 18px; }

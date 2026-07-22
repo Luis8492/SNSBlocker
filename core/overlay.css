@@ -1,7 +1,14 @@
 /* 書き取り関所 — 基盤（共有）スタイル。
    host.js / continue.js / ui.js が生成する、クイズ形式に依存しない部分。
    クイズ固有のスタイルは各 quizzes/<形式>/<形式>.css に置く。
-   読み込み順: この基盤CSS → 各クイズCSS（クイズ側が .ytg-btn 等を上書きできるように）。 */
+   読み込み順: この基盤CSS → 各クイズCSS（クイズ側が .ytg-btn 等を上書きできるように）。
+
+   ── デザイントークン ──────────────────────────────────────────
+   配色はすべて .ytg-overlay に定義する --k-* 変数を参照する。
+   ライト＝「学習ノート」（白ノート地・青磁）、
+   ダーク＝「夜の書斎」（墨地・琥珀）。OSの設定（prefers-color-scheme）に追従。
+   クイズCSSも --k-* を使うこと（意味色 ok/ng はアクセントとは独立）。
+   本文（覚える対象）は明朝、UIはゴシック。装飾は最小限、絵文字は使わない。 */
 
 html.ytg-lock-scroll,
 html.ytg-lock-scroll body {
@@ -9,87 +16,164 @@ html.ytg-lock-scroll body {
 }
 
 .ytg-overlay {
+  /* ライト（学習ノート） */
+  --k-bg: #eef0ee;          /* 画面地 */
+  --k-card: #fdfdfb;        /* カード地 */
+  --k-ink: #333a37;         /* 本文・見出し */
+  --k-sub: #75807a;         /* 補助テキスト */
+  --k-line: #d3d8d2;        /* 罫・枠線 */
+  --k-accent: #47806e;      /* アクセント（青磁） */
+  --k-accent-ink: #fdfdfb;  /* アクセント地の上の文字 */
+  --k-surface: #f3f5f2;     /* 本文欄などの面 */
+  --k-ok: #2f6b45;          /* 意味色: 正・抜け */
+  --k-ng: #b3402e;          /* 意味色: 誤・余分 */
+  --k-ok-bg: #e2efe5;
+  --k-ng-bg: #f6e4e0;
+  --k-btn-border: #c2ccc5;  /* ボタン枠 */
+  --k-btn-ink: #4c5a53;     /* ボタン文字 */
+  --k-cover: #c8d2cb;       /* ゲージの未充填カバー */
+  --k-shadow: 0 12px 40px rgba(60, 70, 64, 0.14);
+
   position: fixed;
   inset: 0;
   z-index: 2147483647;
-  background: #0f1115;
-  background: radial-gradient(circle at 50% 20%, #1b2030 0%, #0f1115 70%);
+  background: var(--k-bg);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
   box-sizing: border-box;
-  font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "MS Mincho", serif;
-  color: #e8e6df;
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+  color: var(--k-ink);
+}
+
+@media (prefers-color-scheme: dark) {
+  .ytg-overlay {
+    /* ダーク（夜の書斎） */
+    --k-bg: #16171a;
+    --k-card: #1e1f23;
+    --k-ink: #d9d6cc;
+    --k-sub: #8d897c;
+    --k-line: #34353a;
+    --k-accent: #b08b52;    /* 琥珀 */
+    --k-accent-ink: #1a1508;
+    --k-surface: #24252a;
+    --k-ok: #86c797;
+    --k-ng: #e08a7a;
+    --k-ok-bg: rgba(134, 199, 151, 0.16);
+    --k-ng-bg: rgba(224, 138, 122, 0.14);
+    --k-btn-border: #4a4b51;
+    --k-btn-ink: #c8c5ba;
+    --k-cover: #4a4b51;
+    --k-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+  }
 }
 
 .ytg-card {
   width: min(720px, 100%);
   max-height: calc(100vh - 48px);
   overflow-y: auto;
-  background: #171a21;
-  border: 1px solid #2a2f3a;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  padding: 32px;
+  background: var(--k-card);
+  border: 1px solid var(--k-line);
+  border-radius: 10px;
+  box-shadow: var(--k-shadow);
+  padding: 28px 32px 32px;
   box-sizing: border-box;
 }
 
-/* --- ヘッダ --- */
-.ytg-header { text-align: center; margin-bottom: 24px; }
-.ytg-title { font-size: 22px; font-weight: 700; letter-spacing: 0.05em; }
-.ytg-subtitle { font-size: 14px; color: #9aa0ab; margin-top: 6px; }
-.ytg-progress {
+/* --- ヘッダ: 判子バッジ＋タイトル＋スタンプ進捗 --- */
+.ytg-header {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.ytg-badge {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  box-sizing: border-box;
+  border: 2px solid var(--k-accent);
+  border-radius: 6px;
+  color: var(--k-accent);
+  font-size: 17px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-top: 16px;
 }
-.ytg-dot {
-  width: 12px;
-  height: 12px;
+.ytg-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.ytg-stamps {
+  margin-left: auto;
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+.ytg-st {
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
   border-radius: 50%;
-  background: #333a47;
-  border: 1px solid #444c5a;
+  border: 1.6px solid var(--k-line);
+  color: var(--k-sub);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.ytg-dot.active { background: #d9b25a; border-color: #d9b25a; }
-.ytg-dot.done { background: #5aa06a; border-color: #5aa06a; }
-.ytg-proglabel { font-size: 13px; color: #9aa0ab; margin-top: 8px; }
+.ytg-st.done {
+  background: var(--k-accent);
+  border-color: var(--k-accent);
+  color: var(--k-accent-ink);
+}
+.ytg-st.now {
+  border-color: var(--k-accent);
+  color: var(--k-accent);
+  font-weight: 700;
+}
 
 /* --- 本文 --- */
 .ytg-body { text-align: center; }
-.ytg-hint { font-size: 14px; color: #9aa0ab; margin-bottom: 16px; }
+.ytg-hint { font-size: 13px; color: var(--k-sub); margin-bottom: 14px; text-align: left; }
 
-/* --- ボタン --- */
-.ytg-btnrow { display: flex; gap: 12px; justify-content: center; }
+/* --- ボタン（丸み・控えめ。primary=アクセント塗り / ghost=枠のみ） --- */
+.ytg-btnrow { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 .ytg-btn {
   font-family: inherit;
-  font-size: 17px;
-  padding: 12px 32px;
-  border-radius: 10px;
-  border: none;
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 11px 28px;
+  border-radius: 22px;
+  border: 1.5px solid var(--k-btn-border);
+  background: var(--k-card);
+  color: var(--k-btn-ink);
   cursor: pointer;
-  transition: transform 0.05s ease, background 0.15s ease;
+  transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease;
 }
 .ytg-btn:active { transform: translateY(1px); }
-.ytg-btn-primary { background: #d9b25a; color: #1a1408; font-weight: 700; }
-.ytg-btn-primary:hover { background: #e6c273; }
-.ytg-btn-ghost {
-  background: transparent;
-  color: #9aa0ab;
-  border: 1px solid #3a4150;
+.ytg-btn:hover { border-color: var(--k-sub); }
+.ytg-btn-primary {
+  background: var(--k-accent);
+  border-color: var(--k-accent);
+  color: var(--k-accent-ink);
 }
-.ytg-btn-ghost:hover { color: #e8e6df; border-color: #5a6270; }
+.ytg-btn-primary:hover { border-color: var(--k-accent); filter: brightness(1.06); }
+.ytg-btn-ghost { background: transparent; }
 
 .ytg-btn-big {
-  font-size: 20px;
-  padding: 18px 28px;
+  font-size: 17px;
+  padding: 16px 28px;
   width: 100%;
   box-sizing: border-box;
 }
 
-.ytg-btn:disabled { cursor: not-allowed; }
+.ytg-btn:disabled { cursor: not-allowed; opacity: 0.45; }
 
 /* 縦積みボタン（クリア後の選択画面用） */
 .ytg-btnstack {

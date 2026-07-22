@@ -1,14 +1,18 @@
-/* 書き取りクイズ固有のスタイル。koten.js が生成する要素を対象にする。
-   基盤CSS(core/overlay.css)の後に読み込む前提（.ytg-btn 等を上書きするため）。 */
+/* 古典文学クイズ固有のスタイル。koten.js が生成する要素を対象にする。
+   基盤CSS(core/overlay.css)の後に読み込む前提。配色は基盤の --k-* トークンを使う
+   （ライト/ダークは基盤側で切り替わる）。
+   本文（覚える対象）は明朝＋背表紙線（左のアクセント線）。 */
 
+/* 本文欄 */
 .ytg-text {
-  font-size: 26px;
-  line-height: 1.9;
-  padding: 28px;
-  background: #1e222b;
-  border: 1px solid #2a2f3a;
-  border-radius: 12px;
-  margin-bottom: 12px;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "MS PMincho", serif;
+  font-size: 22px;
+  line-height: 2.1;
+  letter-spacing: 0.03em;
+  padding: 16px 20px;
+  background: var(--k-surface);
+  border-left: 3px solid var(--k-accent);
+  margin-bottom: 8px;
   text-align: left;
   white-space: pre-wrap;
   word-break: break-word;
@@ -16,8 +20,8 @@
 
 /* ふりがな（青空文庫風ルビ記法を <ruby> で描画） */
 .ytg-text rt {
-  font-size: 0.42em;
-  color: #9aa0ab;
+  font-size: 10px;
+  color: var(--k-sub);
   letter-spacing: 0;
   -webkit-user-select: none;
   user-select: none;
@@ -28,30 +32,12 @@
   display: flex;
   align-items: baseline;
   justify-content: flex-end;
-  gap: 12px;
-  margin: 0 6px 28px;
-  position: relative;
+  gap: 8px;
+  margin: 6px 2px 24px;
+  font-size: 12.5px;
+  color: var(--k-sub);
 }
-.ytg-cite::before {
-  content: "";
-  flex: 1;
-  height: 1px;
-  margin-right: 4px;
-  background: linear-gradient(to right, transparent, #d9b25a88);
-}
-.ytg-cite-title {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: #e6c273;
-  text-shadow: 0 1px 8px rgba(217, 178, 90, 0.25);
-}
-.ytg-cite-author {
-  font-size: 14px;
-  letter-spacing: 0.08em;
-  color: #9aa0ab;
-  font-style: italic;
-}
+.ytg-cite-title::after { content: "｜"; margin-left: 8px; }
 
 .ytg-noselect {
   -webkit-user-select: none;
@@ -67,80 +53,80 @@
   transition: filter 0.6s ease; /* 段階変化を滑らかに */
 }
 
-/* ヒントボタンのクールダウン中・上限到達時 */
-.ytg-btn-ghost:disabled { opacity: 0.45; }
-
+/* 入力欄: 表示欄(.ytg-text)と同じ書体・字送りに揃える。
+   1行あたりの文字数＝折り返し位置が一致し、表示時の記憶と見た目がずれない。 */
 .ytg-input {
   width: 100%;
   box-sizing: border-box;
-  font-family: inherit;
-  /* 表示欄(.ytg-text)と同じ font-size / line-height / padding に揃える。
-     こうすると1行あたりの文字数＝折り返し位置が一致し、
-     「表示のときここまで文字があった」という記憶と入力中の見た目がずれない。 */
-  font-size: 26px;
-  line-height: 1.9;
-  padding: 28px;
-  background: #1e222b;
-  color: #e8e6df;
-  border: 1px solid #3a4150;
-  border-radius: 12px;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "MS PMincho", serif;
+  font-size: 22px;
+  line-height: 2.1;
+  letter-spacing: 0.03em;
+  padding: 16px 20px;
+  background: var(--k-card);
+  color: var(--k-ink);
+  border: 1.5px solid var(--k-line);
+  border-radius: 8px;
   resize: vertical;
   margin-bottom: 20px;
   outline: none;
   word-break: break-word;
 }
-.ytg-input:focus { border-color: #d9b25a; }
+.ytg-input:focus { border-color: var(--k-accent); }
 
-/* --- 待機中の「覚えた」: 左から右へ金色に満ちる ---
-   背景は最初から .ytg-btn-primary の金のまま。灰色の覆いを上に重ねて隠し、
-   それを右端起点で縮める（scaleX(1)→0）ことで左から金が現れるように見せる。
+/* --- 待機中の「覚えた」: 左から右へアクセント色に満ちる ---
+   背景は最初から primary のアクセント色のまま。カバー色の覆いを上に重ねて隠し、
+   それを右端起点で縮める（scaleX(1)→0）ことで左から色が現れるように見せる。
    ボタンの背景色は一度も変化しないため、完成時にトランジションが発火せずフラッシュしない。
-   transform だけで動かすので GPU 合成で軽く、縁も滑らか（再描画が起きない）。
-   文字色・太字は .ytg-btn-primary の濃色をそのまま使う。 */
+   transform だけで動かすので GPU 合成で軽く、縁も滑らか（再描画が起きない）。 */
 .ytg-btn-arming,
 .ytg-btn-arming:hover {
   position: relative;
   overflow: hidden;      /* 覆いを角丸に沿ってクリップ */
-  background: #d9b25a;   /* 金で固定（hover の明色化も抑止） */
+  background: var(--k-accent);
+  border-color: var(--k-accent);
+  filter: none;
 }
 .ytg-fill {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: #9aa0ab;   /* 未充填を隠す灰の覆い。右側に残り、左から金が現れる。 */
+  background: var(--k-cover);  /* 未充填を隠す覆い。右側に残り、左から色が現れる。 */
   transform: scaleX(1);
   transform-origin: right center;
-  will-change: transform;   /* 合成レイヤーに載せて滑らかに */
+  will-change: transform;
   animation: ytg-fill-x 5s linear forwards; /* 実際の時間は JS が duration を上書き */
 }
 .ytg-arm-label {
   position: relative;
   z-index: 1;            /* ラベルを覆いの上に */
+  color: var(--k-accent-ink);
 }
 @keyframes ytg-fill-x { to { transform: scaleX(0); } }
 
 /* --- 結果 --- */
-.ytg-result { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
-.ytg-ok { color: #7ad18a; }
-.ytg-ng { color: #e88a8a; }
+.ytg-result { font-size: 18px; font-weight: 700; margin-bottom: 18px; }
+.ytg-ok { color: var(--k-ok); }
+.ytg-ng { color: var(--k-ng); }
 
-/* --- diff表示 --- */
+/* --- diff表示（本文と同じ扱い: 明朝＋背表紙線） --- */
 .ytg-diff {
-  font-size: 24px;
-  line-height: 2;
-  padding: 24px;
-  background: #1e222b;
-  border: 1px solid #2a2f3a;
-  border-radius: 12px;
-  margin-bottom: 16px;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "MS PMincho", serif;
+  font-size: 21px;
+  line-height: 2.1;
+  letter-spacing: 0.03em;
+  padding: 16px 20px;
+  background: var(--k-surface);
+  border-left: 3px solid var(--k-accent);
+  margin-bottom: 14px;
   text-align: left;
   white-space: pre-wrap;
   word-break: break-word;
 }
-.ytg-eq  { color: #cfd3da; }
-.ytg-ins { color: #e88a8a; text-decoration: line-through; background: rgba(232, 138, 138, 0.15); }
-.ytg-del { color: #7ad18a; background: rgba(122, 209, 138, 0.18); border-radius: 3px; }
-.ytg-legend { font-size: 13px; color: #9aa0ab; margin-bottom: 20px; }
-.ytg-legend .ytg-eq  { color: #cfd3da; }
-.ytg-legend .ytg-ins { text-decoration: none; background: none; color: #e88a8a; }
-.ytg-legend .ytg-del { background: none; color: #7ad18a; }
+.ytg-eq  { color: var(--k-ink); }
+.ytg-ins { color: var(--k-ng); text-decoration: line-through; background: var(--k-ng-bg); }
+.ytg-del { color: var(--k-ok); background: var(--k-ok-bg); border-radius: 3px; }
+.ytg-legend { font-size: 12.5px; color: var(--k-sub); margin-bottom: 18px; }
+.ytg-legend .ytg-eq  { color: var(--k-ink); }
+.ytg-legend .ytg-ins { text-decoration: none; background: none; color: var(--k-ng); }
+.ytg-legend .ytg-del { background: none; color: var(--k-ok); }

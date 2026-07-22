@@ -49,13 +49,13 @@
       cb.setAttribute("data-id", id);
       cb.checked = enabled.indexOf(id) !== -1;
       cb.addEventListener("change", onChange);
-      var icon = document.createElement("span");
-      icon.className = "icon";
-      icon.textContent = quiz.icon || "";
+      var badge = document.createElement("span");
+      badge.className = "badge";
+      badge.textContent = quiz.badge || "";
       var name = document.createElement("span");
       name.textContent = quiz.title || id;
       label.appendChild(cb);
-      label.appendChild(icon);
+      label.appendChild(badge);
       label.appendChild(name);
       list.appendChild(label);
     });

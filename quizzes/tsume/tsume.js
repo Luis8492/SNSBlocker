@@ -22,7 +22,7 @@
   var el = ui.el;
   var S = K.tsumeShogi;
 
-  var ICON = "♟";
+  var BADGE = "詰";
 
   // 手数ごとのプラグイン定義。perRound は1ラウンドの問数。
   var VARIANTS = [
@@ -80,7 +80,7 @@
 
     function renderHeader() {
       ui.renderHeader(header, {
-        icon: ICON, title: cfg.title,
+        badge: BADGE, title: cfg.title,
         total: problems.length, index: state.index
       });
     }
@@ -425,7 +425,7 @@
     K.registerQuiz({
       id: cfg.id,
       title: cfg.title,
-      icon: ICON,
+      badge: BADGE,
       start: function (container, ctx) { startQuiz(cfg, container, ctx); }
     });
   });

@@ -9,7 +9,13 @@
   <link rel="stylesheet" href="quizzes/hyakunin/hyakunin.css">
   <link rel="stylesheet" href="quizzes/juon/juon.css">
   <link rel="stylesheet" href="quizzes/tsume/tsume.css">
-  <style>html, body { margin: 0; height: 100%; background: #0f1115; }</style>
+  <style>
+    /* 地色は overlay.css のトークンと同値（オーバーレイが全面を覆うため実質見えない保険） */
+    html, body { margin: 0; height: 100%; background: #eef0ee; }
+    @media (prefers-color-scheme: dark) {
+      html, body { background: #16171a; }
+    }
+  </style>
 </head>
 <body>
   <div id="ytg-root"></div>

@@ -4,48 +4,85 @@
   <meta charset="utf-8">
   <title>出題プラグインの選択</title>
   <style>
+    /* 配色トークンは core/overlay.css と同値（このページは単体で開くため自前に持つ）。
+       ライト=学習ノート / ダーク=夜の書斎。OS設定に追従。 */
+    :root {
+      --k-bg: #eef0ee;
+      --k-card: #fdfdfb;
+      --k-ink: #333a37;
+      --k-sub: #75807a;
+      --k-line: #d3d8d2;
+      --k-accent: #47806e;
+      --k-ok: #2f6b45;
+      --k-ng: #b3402e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --k-bg: #16171a;
+        --k-card: #1e1f23;
+        --k-ink: #d9d6cc;
+        --k-sub: #8d897c;
+        --k-line: #34353a;
+        --k-accent: #b08b52;
+        --k-ok: #86c797;
+        --k-ng: #e08a7a;
+      }
+    }
     body {
       margin: 0;
       padding: 16px 18px;
       min-width: 300px;
-      background: #0f1115;
-      color: #e8e6df;
-      font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      background: var(--k-bg);
+      color: var(--k-ink);
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
       font-size: 14px;
     }
     h1 {
       margin: 0 0 12px;
-      font-size: 15px;
-      letter-spacing: 0.08em;
-      color: #e6c273;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
     }
     label.quiz {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 9px 10px;
+      padding: 8px 10px;
       margin-bottom: 6px;
-      background: #1e222b;
-      border: 1px solid #2a2f3a;
-      border-radius: 10px;
+      background: var(--k-card);
+      border: 1px solid var(--k-line);
+      border-radius: 8px;
       cursor: pointer;
     }
-    label.quiz:hover { border-color: #3a4150; }
-    label.quiz input { accent-color: #d9b25a; width: 16px; height: 16px; }
-    .icon { width: 1.4em; text-align: center; }
+    label.quiz:hover { border-color: var(--k-sub); }
+    label.quiz input { accent-color: var(--k-accent); width: 16px; height: 16px; }
+    .badge {
+      flex: none;
+      width: 24px;
+      height: 24px;
+      box-sizing: border-box;
+      border: 2px solid var(--k-accent);
+      border-radius: 5px;
+      color: var(--k-accent);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     .note {
       margin: 12px 2px 0;
       font-size: 12px;
       line-height: 1.7;
-      color: #9aa0ab;
+      color: var(--k-sub);
     }
     #status {
       min-height: 1.4em;
       margin-top: 8px;
       font-size: 12px;
-      color: #7ad18a;
+      color: var(--k-ok);
     }
-    #status.err { color: #e88a8a; }
+    #status.err { color: var(--k-ng); }
   </style>
 </head>
 <body>

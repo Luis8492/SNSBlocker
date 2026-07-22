@@ -53,7 +53,7 @@ YouTube を見すぎないための Chrome 拡張機能です。
 core/registry.js   基盤: クイズを登録・選択するレジストリ（window.Kansho）
 core/ui.js         基盤: 形式非依存の共有UI部品（el / コピペ禁止 / 進捗ヘッダ）
 core/host.js       基盤: YouTube関所（動画検知・オーバーレイ・ロック管理・クリア後画面）
-core/overlay.css   基盤: 共通スタイル（オーバーレイ/カード/ヘッダ/ボタン/進捗ドット）
+core/overlay.css   基盤: 共通スタイル＋デザイントークン（--k-*。ライト/ダーク両対応）
 config.js          どの形式を出すか（選択パネルの保存値の読み込み＋フォーク用の既定値）
 continue.html/js   基盤: 継続ページ
 options.html/js    基盤: 出題プラグインの選択パネル（ツールバーアイコンから開く）
@@ -74,7 +74,7 @@ quizzes/<id>/      クイズ: 1フォルダ＝1プラグイン（ロジック・
    Kansho.registerQuiz({
      id: "shogi",            // 選択パネル・config.activeQuiz と対応
      title: "次の一手",
-     icon: "♟",
+     badge: "次",            // 判子バッジ用の漢字一字（絵文字は使わない）
      // 1ラウンドを container に構築し、クリアで ctx.onComplete(info) を呼ぶ。
      // info = { body, ui, el, restart } を渡すと基盤がクリア後画面を描く。
      start: function (container, ctx) { /* … */ }
@@ -91,6 +91,16 @@ quizzes/<id>/      クイズ: 1フォルダ＝1プラグイン（ロジック・
    追加したファイルを（JSは `config.js` の後・`core/host.js` の前、CSSは
    `core/overlay.css` の後に）登録する。
 3. 選択パネルで新しいクイズにチェックを入れると出題される。
+
+## デザイン
+
+- **ライト=「学習ノート」**（白ノート地・青磁アクセント）、**ダーク=「夜の書斎」**（墨地・琥珀）。
+  OS の設定（`prefers-color-scheme`）に追従する。
+- 配色はすべて `core/overlay.css` の `--k-*` トークン経由。クイズCSSもトークンを使う
+  （盤・鍵盤など実物由来の固定色は例外）。
+- **絵文字は使わない**。プラグインの印は漢字一字の判子バッジ（角・枠。`spec.badge`）。
+- 本文（覚える対象）は明朝＋背表紙線（左のアクセント線）、UIはゴシック。
+- 進捗はスタンプ（済=✓ / 現在=番号）。動きは意味のあるもの（ゲージ・ぼかし解除・正解フェード）だけ。
 
 ## 仕様メモ
 

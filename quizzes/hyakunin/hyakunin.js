@@ -18,7 +18,7 @@
   var ui = K.ui;
   var el = ui.el;
 
-  var ICON = "🎴";
+  var BADGE = "百";
   var TITLE = "百人一首";
   var POEMS_PER_ROUND = 3; // 1ラウンドの出題数
 
@@ -128,7 +128,7 @@
 
     function renderHeader() {
       ui.renderHeader(header, {
-        icon: ICON, title: TITLE,
+        badge: BADGE, title: TITLE,
         total: poems.length, index: state.index
       });
     }
@@ -333,7 +333,7 @@
   K.registerQuiz({
     id: "hyakunin",
     title: TITLE,
-    icon: ICON,
+    badge: BADGE,
     start: start,
     util: { normalize: normalize, isCorrect: isCorrect }
   });
