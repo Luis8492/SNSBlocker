@@ -46,13 +46,98 @@
 
   // ---- ルビ（青空文庫風「漢字《かな》」「｜語《かな》」記法） --------------
   // ルビは直前の漢字連続部分（｜があればそこから）に振られる。
-  // 表示は <ruby>本文<rt>かな</rt></ruby>、採点はルビを除いた本文のみで行う。
+  // 表示は <ruby>本文<rt>かな</rt></ruby>。採点ではルビ箇所を
+  // 本文（漢字）・よみ（かな）のどちらで書いても正解とする。
   var RUBY_RE = /(?:｜([^《｜]+)|([々一-鿿々〆ヵヶ]+))《([^》]+)》/g;
 
-  // ルビ記法を取り除いた本文（採点・diff用）
-  function stripRuby(text) {
-    return String(text).replace(RUBY_RE, function (_, a, b) { return a || b; })
-      .replace(/｜/g, "");
+  // ルビ記法をトークン列に分解する（採点用）。
+  // 地の文 → { alts: [文字列] }、ルビ箇所 → { alts: [本文, よみ] }。
+  // ルビ箇所は本文（漢字）とよみ（かな）のどちらで入力しても正解になる。
+  function tokenizeRuby(text) {
+    text = String(text);
+    var tokens = [], last = 0, m;
+    RUBY_RE.lastIndex = 0;
+    while ((m = RUBY_RE.exec(text))) {
+      if (m.index > last) {
+        tokens.push({ alts: [text.slice(last, m.index).replace(/｜/g, "")] });
+      }
+      tokens.push({ alts: [m[1] || m[2], m[3]] });
+      last = RUBY_RE.lastIndex;
+    }
+    if (last < text.length) {
+      tokens.push({ alts: [text.slice(last).replace(/｜/g, "")] });
+    }
+    return tokens;
+  }
+
+  // 入力がトークン列と一致するか（各ルビ箇所は漢字/かなのどちらでも可）。
+  // 正規化空間で「到達しうる入力位置」の集合を前から伝播させて判定する。
+  function matchesAny(tokens, input) {
+    var u = normalize(input);
+    var pos = [0];
+    for (var t = 0; t < tokens.length; t++) {
+      var alts = tokens[t].alts, seen = {}, next = [];
+      for (var v = 0; v < alts.length; v++) {
+        var e = normalize(alts[v]);
+        for (var i = 0; i < pos.length; i++) {
+          var q = pos[i] + e.length;
+          if (!seen[q] && u.substr(pos[i], e.length) === e) {
+            seen[q] = true;
+            next.push(q);
+          }
+        }
+      }
+      if (!next.length) return false;
+      pos = next;
+    }
+    return pos.indexOf(u.length) !== -1;
+  }
+
+  // 不正解時の diff 用に、入力の表記に最も近い解釈（各ルビ箇所で漢字/かなの
+  // どちらを使ったか）を選び、具体的な期待文字列を組み立てる。
+  // トークン境界ごとに LCS を DP で伝播させ、末尾から選択を巻き戻す。
+  // 同点なら本文（漢字）を優先（丸ごと抜けた箇所は原文の漢字で表示される）。
+  function chooseExpected(tokens, input) {
+    var u = normalize(input), m = u.length, T = tokens.length;
+    var f = new Int32Array(m + 1); // f[j] = 消費済みトークン列と入力先頭j文字の最大LCS
+    var choices = [];
+    for (var b = 0; b < T; b++) {
+      var alts = tokens[b].alts;
+      var fNext = new Int32Array(m + 1), vSel = new Uint8Array(m + 1),
+          backSel = new Int32Array(m + 1), first = true;
+      for (var v = 0; v < alts.length; v++) {
+        var e = normalize(alts[v]), len = e.length;
+        // g[j] = このトークンを途中まで消費した状態のLCS / p[j] = トークン開始時の入力位置
+        var g = f, p = new Int32Array(m + 1);
+        for (var j = 0; j <= m; j++) p[j] = j;
+        for (var c = 1; c <= len; c++) {
+          var g2 = new Int32Array(m + 1), p2 = new Int32Array(m + 1);
+          g2[0] = g[0]; p2[0] = p[0];
+          for (var j = 1; j <= m; j++) {
+            var s = g[j], sp = p[j];                                // 期待側の文字を落とす
+            if (g2[j - 1] > s) { s = g2[j - 1]; sp = p2[j - 1]; }   // 入力側の文字を落とす
+            if (e[c - 1] === u[j - 1] && g[j - 1] + 1 >= s) {       // 一致（同点なら一致を優先）
+              s = g[j - 1] + 1; sp = p[j - 1];
+            }
+            g2[j] = s; p2[j] = sp;
+          }
+          g = g2; p = p2;
+        }
+        for (var j = 0; j <= m; j++) {
+          if (first || g[j] > fNext[j]) { fNext[j] = g[j]; vSel[j] = v; backSel[j] = p[j]; }
+        }
+        first = false;
+      }
+      f = fNext;
+      choices.push({ v: vSel, back: backSel });
+    }
+    // 末尾から各トークンの選択を回収して連結
+    var parts = new Array(T), j = m;
+    for (var b = T - 1; b >= 0; b--) {
+      parts[b] = tokens[b].alts[choices[b].v[j]];
+      j = choices[b].back[j];
+    }
+    return parts.join("");
   }
 
   // ルビ記法をふりがな付きDOMとして node に描画する（表示用）
@@ -293,16 +378,17 @@
       ta.focus();
     }
 
-    // 答え合わせ
+    // 答え合わせ（ルビ箇所は漢字でもかなでも正解）
     function check(input) {
-      var expected = stripRuby(passage.segments[state.index]); // ルビは採点対象外
-      if (isCorrect(expected, input)) {
+      var tokens = tokenizeRuby(passage.segments[state.index]);
+      if (matchesAny(tokens, input)) {
         // 正解時は何も讃えず、淡々と次へ。
         state.index++;
         if (state.index >= passage.segments.length) complete();
         else showDisplay();
       } else {
-        showDiff(expected, input);
+        // diff は入力の表記（漢字/かな）に最も近い解釈の期待文字列と比べる。
+        showDiff(chooseExpected(tokens, input), input);
       }
     }
 
@@ -362,6 +448,9 @@
     badge: BADGE,
     start: start,
     // 採点ユーティリティを外から使いたい場合のために公開（任意）。
-    util: { normalize: normalize, isCorrect: isCorrect }
+    util: {
+      normalize: normalize, isCorrect: isCorrect,
+      tokenizeRuby: tokenizeRuby, matchesAny: matchesAny, chooseExpected: chooseExpected
+    }
   });
 })();
