@@ -272,10 +272,43 @@
   // 玉方のどの応手にも plies 手以内の詰みがあるか（replies は legalMoves(s) 済み）
   function allRepliesLose(s, replies, plies) {
     for (var i = 0; i < replies.length; i++) {
-      var n = applyMove(s, replies[i]);
-      if (!mateMove(n, plies)) return false;
+      if (!replyLoses(s, replies[i], plies)) return false;
     }
     return true;
+  }
+
+  // 玉方の応手 r が「plies 手以内の詰み」を免れないか。
+  // 詰将棋のルールに従い、無駄合は手数に数えない:
+  //   打った合駒を攻方がすぐ取り返し、（合駒と取りの2手を消費せずに）
+  //   同じ残り手数で詰み続けられるなら、その合駒は無駄合。
+  // 厳密な公式定義が無い領域なので、この「取って同手数で詰む」近似を使う。
+  function replyLoses(s, r, plies) {
+    var n = applyMove(s, r);
+    if (plies >= 1 && mateMove(n, plies)) return true; // 通常のカウントで詰む
+    if (r.from === -1) return isUselessDrop(n, r.to, plies); // 合駒打ち→無駄合か
+    return false;
+  }
+
+  // 直前に打たれた合駒（sq）が無駄合か。n は攻方手番の局面。
+  // 攻方がその駒を盤上の駒で（王手を継続しつつ）取り、玉方のどの応手にも
+  // 元と同じ残り手数 plies で詰みが続くなら無駄合。
+  // 再帰は玉方の持駒が1枚ずつ減るため必ず停止する。
+  function isUselessDrop(n, sq, plies) {
+    var moves = legalMoves(n);
+    for (var i = 0; i < moves.length; i++) {
+      var m = moves[i];
+      if (m.to !== sq || m.from === -1) continue; // その合駒を取る手のみ
+      if (!givesCheck(n, m)) continue;            // 王手は継続する
+      var n2 = applyMove(n, m);
+      var replies = legalMoves(n2);
+      if (replies.length === 0) return true;      // 取った瞬間に詰み
+      var all = true;
+      for (var j = 0; j < replies.length; j++) {
+        if (!replyLoses(n2, replies[j], plies)) { all = false; break; }
+      }
+      if (all) return true;
+    }
+    return false;
   }
 
   K.tsumeShogi = {
@@ -289,6 +322,7 @@
     attacks: attacks,
     findKing: findKing,
     mateMove: mateMove,
-    allRepliesLose: allRepliesLose
+    allRepliesLose: allRepliesLose,
+    replyLoses: replyLoses
   };
 })();

@@ -34,6 +34,15 @@
   // 持駒の枚数表記（歩は最大18枚まで持ちうる）
   var KANJI_NUM = ["", "", "二", "三", "四", "五", "六", "七", "八", "九",
     "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八"];
+  var FILE_CHAR = ["１", "２", "３", "４", "５", "６", "７", "８", "９"];
+  var RANK_CHAR = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
+
+  // 着手の棋譜表記（例: ７一玉 / ５五歩打 / ２二銀成）
+  function moveLabel(m) {
+    var c = m.to % 9, r = Math.floor(m.to / 9);
+    return FILE_CHAR[9 - c - 1] + RANK_CHAR[r] + CHAR[m.piece] +
+      (m.promote ? "成" : "") + (m.from === -1 ? "打" : "");
+  }
 
   function pickProblems(all, count) {
     var pool = all.slice();
@@ -97,7 +106,8 @@
         phase: "user",   // user | anim | wrong | done
         sel: null,       // { kind: "board"|"hand", idx|piece }
         preMove: null,   // 指し直し用（直前のユーザー着手前の状態）
-        pendingPromo: null
+        pendingPromo: null,
+        freeSquare: null // 玉方が無駄合を打ったマス（その取りは手数に数えない）
       };
       g.userMoves = checkMoves(g.s);
       render();
@@ -257,39 +267,70 @@
 
     // ---- 着手の実行と判定 --------------------------------------------------
     function execMove(m) {
-      g.preMove = { s: g.s, remaining: g.remaining, last: g.last };
+      g.preMove = { s: g.s, remaining: g.remaining, last: g.last, freeSquare: g.freeSquare };
       g.pendingPromo = null;
       g.sel = null;
       g.msg = "";
 
+      // 直前の無駄合をこの手で取るなら、手数に数えない（詰将棋のルール）
+      var freeCapture = g.freeSquare !== null && m.from !== -1 && m.to === g.freeSquare;
+      g.freeSquare = null;
+
       g.s = S.applyMove(g.s, m);
       g.last = m.to;
-      g.remaining--;
+      if (!freeCapture) g.remaining--;
 
       var replies = S.legalMoves(g.s);
       if (replies.length === 0) { succeed(); return; }
 
-      // 玉方に応手がある: 残り手数内の強制詰みを保っているか
-      if (g.remaining < 2 || !S.allRepliesLose(g.s, replies, g.remaining - 1)) {
+      // 玉方に応手がある: 残り手数内の強制詰みを保っているか（無駄合は考慮済み）。
+      // 保っていなければ、逃れ手を実際に盤上で指してみせる（指し直すで戻る）。
+      var refute = findRefutation(g.s, replies, g.remaining - 1);
+      if (refute) {
+        var label = moveLabel(refute);
+        g.s = S.applyMove(g.s, refute);
+        g.last = refute.to;
         g.phase = "wrong";
-        g.wrongMsg = g.remaining < 1 ? "詰みませんでした（手数超過）" : "玉方に逃れ手があります";
+        g.wrongMsg = g.remaining < 1
+          ? "詰みませんでした（手数超過）。玉方の応手: " + label
+          : "玉方に逃れ手があります: " + label + "（盤はその局面）";
         render();
         return;
       }
 
-      // 玉方の応手（どれも敗着なのでランダムに選ぶ）
+      // 玉方の応手: 通常カウントで負ける手からランダムに選ぶ。
+      // それが無い場合は残りは無駄合だけなので、それを指させて
+      // freeSquare に記録する（玉方の合駒もユーザーの取りも手数に数えない）。
       g.phase = "anim";
       render();
       setTimeout(function () {
         if (!container.isConnected || g.phase !== "anim") return;
-        var r = replies[Math.floor(Math.random() * replies.length)];
+        var plies = g.remaining - 1;
+        var strict = replies.filter(function (r) {
+          return plies >= 1 && S.mateMove(S.applyMove(g.s, r), plies) !== null;
+        });
+        var pool = strict.length ? strict : replies;
+        var r = pool[Math.floor(Math.random() * pool.length)];
         g.s = S.applyMove(g.s, r);
         g.last = r.to;
-        g.remaining--;
+        if (strict.length) {
+          g.remaining--;
+        } else {
+          g.freeSquare = r.to; // 無駄合: 手数に数えない
+        }
         g.phase = "user";
         g.userMoves = checkMoves(g.s);
         render();
       }, 600);
+    }
+
+    // ユーザーの着手を咎める玉方の応手（残り手数で詰まないもの）を探す。
+    // 無駄合（取り返して同手数で詰む合駒）は逃れ手とみなさない（S.replyLoses）。
+    function findRefutation(s, replies, plies) {
+      for (var i = 0; i < replies.length; i++) {
+        if (!S.replyLoses(s, replies[i], plies)) return replies[i];
+      }
+      return null;
     }
 
     function undoMove() {
@@ -297,6 +338,7 @@
       g.s = g.preMove.s;
       g.remaining = g.preMove.remaining;
       g.last = g.preMove.last;
+      g.freeSquare = g.preMove.freeSquare;
       g.preMove = null;
       g.phase = "user";
       g.wrongMsg = "";
@@ -324,6 +366,12 @@
     function showHint() {
       if (g.phase !== "user") return;
       var m = S.mateMove(g.s, g.remaining);
+      // 通常カウントで詰みが無い＝直前が無駄合。その取りがヒントになる。
+      if (!m && g.freeSquare !== null) {
+        m = g.userMoves.filter(function (um) {
+          return um.from !== -1 && um.to === g.freeSquare;
+        })[0] || null;
+      }
       if (!m) return;
       var cells = body.querySelectorAll(".ts-cell");
       [m.from, m.to].forEach(function (idx) {
