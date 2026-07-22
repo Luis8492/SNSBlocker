@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-"YouTube 書き取り関所" — a Chrome extension (Manifest V3) that overlays YouTube video pages (`/watch`, `/shorts`) with a quiz gate (dictation, ear training, tsume-shogi). The video stays locked (and force-paused) until all segments of a randomly chosen passage are typed correctly. There is no build step, no package.json, no tests — plain ES5-style vanilla JS loaded directly as content scripts.
+"SNSQuizLocker" — a Chrome extension (Manifest V3) that overlays SNS pages (YouTube per-video; X/Facebook/Instagram/TikTok/Reddit site-wide) with a quiz gate (dictation, ear training, tsume-shogi). The video stays locked (and force-paused) until all segments of a randomly chosen passage are typed correctly. There is no build step, no package.json, no tests — plain ES5-style vanilla JS loaded directly as content scripts.
 
 Comments, commit messages, and UI text are all in Japanese; follow that convention.
 
