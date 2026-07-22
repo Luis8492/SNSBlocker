@@ -14,6 +14,7 @@
 
   var ICON = "📜";
   var TITLE = "書き取り関所";
+  var ARMING_MS = 5000; // 「覚えた」が押せるようになるまでの待機（円形ゲージが満ちる時間）
 
   // ---- 文字の正規化 ------------------------------------------------------
   // 1文字を比較用に正規化する。句読点・記号・空白は "" になる（＝比較で無視）。
@@ -128,6 +129,27 @@
       return cite;
     }
 
+    // ---- Ctrl+Enter で「現在画面の主ボタン」を押す ------------------------
+    // 各画面が setEnter(fn) で動作を差し替える。リスナは document に1つだけ張り、
+    // フォーカス位置に依存せず拾う。container 撤去後は自動失効、再スタート時は張り替え。
+    var enterAction = null;
+    function setEnter(fn) { enterAction = fn; }
+    function onKey(ev) {
+      if (ev.key !== "Enter" || !(ev.ctrlKey || ev.metaKey)) return;
+      if (!container.isConnected) {
+        document.removeEventListener("keydown", onKey, true);
+        return;
+      }
+      if (typeof enterAction === "function") {
+        ev.preventDefault();
+        ev.stopPropagation();
+        enterAction();
+      }
+    }
+    if (container._ytgKey) document.removeEventListener("keydown", container._ytgKey, true);
+    container._ytgKey = onKey;
+    document.addEventListener("keydown", onKey, true);
+
     // 覚える画面
     function showDisplay() {
       renderHeader();
@@ -141,9 +163,33 @@
 
       body.appendChild(buildCite());
 
-      var btn = el("button", "ytg-btn ytg-btn-primary", "覚えた");
+      // 「覚えた」は表示から ARMING_MS の間は押せない。
+      // ボタンが左から右へ金色に満ちきると解除（transform で軽く滑らかに）。
+      var btn = el("button", "ytg-btn ytg-btn-primary ytg-btn-arming", "");
+      btn.disabled = true;
+      var fill = el("span", "ytg-fill");
+      fill.style.animationDuration = (ARMING_MS / 1000) + "s";
+      btn.appendChild(fill);
+      btn.appendChild(el("span", "ytg-arm-label", "覚えた"));
       btn.addEventListener("click", showInput);
       body.appendChild(btn);
+
+      // Ctrl+Enter でも押せる（ただし待機解除後のみ）。
+      setEnter(function () { if (!btn.disabled) showInput(); });
+
+      // 解除はゲージが実際に満ちた瞬間（animationend）に行う。
+      // setTimeout だと重いページでアニメ開始が遅れ、終端で一気に進んで見えるため。
+      var armed = false;
+      function disarm() {
+        if (armed || !btn.isConnected) return; // 二重発火・画面切替後を無視
+        armed = true;
+        btn.disabled = false;
+        btn.classList.remove("ytg-btn-arming");
+        btn.textContent = "覚えた"; // 充填要素を消して通常表示へ
+      }
+      fill.addEventListener("animationend", disarm);
+      // アニメが走らない環境向けフォールバック（余裕を持たせる）。
+      setTimeout(disarm, ARMING_MS + 1500);
     }
 
     // 入力画面
@@ -159,12 +205,6 @@
       ta.rows = 4;
       ta.placeholder = "ここに入力…";
       ui.forbidPaste(ta);
-      ta.addEventListener("keydown", function (ev) {
-        if (ev.key === "Enter" && (ev.ctrlKey || ev.metaKey)) {
-          ev.preventDefault();
-          check(ta.value);
-        }
-      });
       body.appendChild(ta);
 
       body.appendChild(buildCite());
@@ -177,6 +217,9 @@
       row.appendChild(submit);
       row.appendChild(reread);
       body.appendChild(row);
+
+      // Ctrl+Enter で送信（プレーンEnterは改行のまま）。
+      setEnter(function () { check(ta.value); });
       ta.focus();
     }
 
@@ -214,12 +257,16 @@
       var btn = el("button", "ytg-btn ytg-btn-primary", "やり直す");
       btn.addEventListener("click", showDisplay);
       body.appendChild(btn);
+
+      // Ctrl+Enter でも「やり直す」を押せる。
+      setEnter(showDisplay);
     }
 
     // 全問終了 → 基盤側（ctx.onComplete）に委譲
     function complete() {
       renderHeader();
       body.innerHTML = "";
+      setEnter(null); // クリア後画面のボタンは Ctrl+Enter 対象外
       if (typeof ctx.onComplete === "function") {
         ctx.onComplete({
           container: container,

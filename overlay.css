@@ -157,6 +157,36 @@ html.ytg-lock-scroll body {
   box-sizing: border-box;
 }
 
+.ytg-btn:disabled { cursor: not-allowed; }
+
+/* --- 待機中の「覚えた」: 左から右へ金色に満ちる ---
+   背景は最初から .ytg-btn-primary の金のまま。灰色の覆いを上に重ねて隠し、
+   それを右端起点で縮める（scaleX(1)→0）ことで左から金が現れるように見せる。
+   ボタンの背景色は一度も変化しないため、完成時にトランジションが発火せずフラッシュしない。
+   transform だけで動かすので GPU 合成で軽く、縁も滑らか（再描画が起きない）。
+   文字色・太字は .ytg-btn-primary の濃色をそのまま使う。 */
+.ytg-btn-arming,
+.ytg-btn-arming:hover {
+  position: relative;
+  overflow: hidden;      /* 覆いを角丸に沿ってクリップ */
+  background: #d9b25a;   /* 金で固定（hover の明色化も抑止） */
+}
+.ytg-fill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: #9aa0ab;   /* 未充填を隠す灰の覆い。右側に残り、左から金が現れる。 */
+  transform: scaleX(1);
+  transform-origin: right center;
+  will-change: transform;   /* 合成レイヤーに載せて滑らかに */
+  animation: ytg-fill-x 5s linear forwards; /* 実際の時間は JS が duration を上書き */
+}
+.ytg-arm-label {
+  position: relative;
+  z-index: 1;            /* ラベルを覆いの上に */
+}
+@keyframes ytg-fill-x { to { transform: scaleX(0); } }
+
 /* 縦積みボタン（クリア後の選択画面用） */
 .ytg-btnstack {
   display: flex;
