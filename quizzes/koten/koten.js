@@ -272,7 +272,7 @@
     function showDisplay() {
       renderHeader();
       body.innerHTML = "";
-      body.appendChild(el("div", "ytg-hint", "次の文章を覚えてください（コピー不可）"));
+      body.appendChild(el("div", "ytg-hint", "次の文章を覚えてください"));
 
       var textBox = el("div", "ytg-text ytg-noselect");
       renderRuby(textBox, passage.segments[state.index]);
@@ -314,7 +314,7 @@
     function showInput() {
       body.innerHTML = "";
       body.appendChild(el("div", "ytg-hint",
-        "覚えた文章を入力してください（貼り付け不可 / Ctrl+Enterで送信）"));
+        "覚えた文章を入力してください"));
 
       // ヒント: ぼかした原文（濃淡＝漢字かどうかが分かる程度）。初期は非表示。
       // ボタンを押すたびに表示→1pxずつ薄くなる（最低 BLUR_MIN px）。

@@ -175,7 +175,7 @@
     function showDisplay() {
       renderHeader();
       body.innerHTML = "";
-      body.appendChild(el("div", "ytg-hint", "下の句を覚えてください（コピー不可）"));
+      body.appendChild(el("div", "ytg-hint", "下の句を覚えてください"));
 
       body.appendChild(buildKami());
 
@@ -200,7 +200,7 @@
     function showInput() {
       body.innerHTML = "";
       body.appendChild(el("div", "ytg-hint",
-        "下の句を入力してください（貼り付け不可 / Ctrl+Enterで送信）"));
+        "下の句を入力してください"));
 
       body.appendChild(buildKami());
 

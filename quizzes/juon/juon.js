@@ -217,8 +217,7 @@
         body.appendChild(el("div", "ytg-result ytg-ok ju-fadeout", "正解"));
       }
       body.appendChild(el("div", "ytg-hint",
-        "同時に鳴る2つの音を聴き取り、鍵盤下の○で2音を選んでください" +
-        "（鍵盤クリックは試し弾き / Ctrl+Enterで送信）"));
+        "同時に鳴る2つの音を聴き取り、鍵盤下の○で2音を選んでください"));
 
       var selected = [];
 
@@ -295,7 +294,7 @@
       legend.appendChild(el("span", "ju-legend-ok", "■"));
       legend.appendChild(document.createTextNode(" 合っていた音　"));
       legend.appendChild(el("span", "ju-legend-ng", "■"));
-      legend.appendChild(document.createTextNode(" 違う音（正しい音は自分で聴き取る）"));
+      legend.appendChild(document.createTextNode(" 違う音"));
       body.appendChild(legend);
 
       var row = el("div", "ytg-btnrow");
