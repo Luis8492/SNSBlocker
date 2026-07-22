@@ -1,14 +1,14 @@
 // 百人一首書き取りクイズ — 出題ロジック。
 //
-// 書き取り（dictation）と同系だが、
+// 書き取り（koten）と同系だが、
 //   - 上の句は常に表示され、覚えて入力するのは下の句のみ
 //   - 「覚えた」に待機時間（5秒ゲージ）は無い
 // という点が異なる。1ラウンドは POEMS_PER_ROUND 首（重複なしランダム）。
 //
 // 基盤層（Kansho）へ registerQuiz で登録する。採点（正規化・diff）は
 // この形式固有のドメインロジックなので、プラグインとして自己完結する
-// ようここに閉じている（dictation には依存しない。フォーク運用で
-// quizzes/dictation を消しても動く）。
+// ようここに閉じている（koten には依存しない。フォーク運用で
+// quizzes/koten を消しても動く）。
 //   ctx.onComplete : 全問クリア時に基盤が渡すコールバック（クリア後画面を描画）
 //   ctx.options    : { poems } — 出題する首を固定したい場合（省略時ランダム）
 (function () {
@@ -19,10 +19,10 @@
   var el = ui.el;
 
   var ICON = "🎴";
-  var TITLE = "百人一首関所";
+  var TITLE = "百人一首";
   var POEMS_PER_ROUND = 3; // 1ラウンドの出題数
 
-  // ---- 文字の正規化（dictation と同仕様） --------------------------------
+  // ---- 文字の正規化（koten と同仕様） --------------------------------
   // 句読点・記号・空白は "" になる（＝比較で無視）。
   // 全角/半角(NFKC)・英字の大小も吸収する。
   function normChar(c) {
@@ -152,7 +152,7 @@
       return wrap;
     }
 
-    // ---- Ctrl+Enter で「現在画面の主ボタン」を押す（dictation と同じ方式）
+    // ---- Ctrl+Enter で「現在画面の主ボタン」を押す（koten と同じ方式）
     var enterAction = null;
     function setEnter(fn) { enterAction = fn; }
     function onKey(ev) {

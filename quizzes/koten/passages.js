@@ -1,7 +1,7 @@
 // 書き取りクイズのデータ（古典文学）。
 // 各作品は「一続きの文章」を3つの segment に分けて出題する。
 // segment は覚えるのがそれなりに大変な長さにしてある。
-// dictation.js から Kansho.data.dictationPassages として参照される。
+// koten.js から Kansho.data.kotenPassages として参照される。
 //
 // 作品や分割はここを編集すれば自由に追加・変更できる（基盤には影響しない）。
 (function () {
@@ -10,7 +10,7 @@
   var K = window.Kansho || (window.Kansho = {});
   K.data = K.data || {};
 
-  K.data.dictationPassages = [
+  K.data.kotenPassages = [
     {
       title: "徒然草・序段",
       author: "吉田兼好",

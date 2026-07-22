@@ -13,7 +13,7 @@
   var el = ui.el;
 
   var ICON = "📜";
-  var TITLE = "書き取り関所";
+  var TITLE = "古典文学";
   var ARMING_MS = 5000; // 「覚えた」が押せるようになるまでの待機（円形ゲージが満ちる時間）
 
   // ---- 文字の正規化 ------------------------------------------------------
@@ -103,7 +103,7 @@
   function start(container, ctx) {
     ctx = ctx || {};
     var opts = ctx.options || {};
-    var passages = K.data.dictationPassages || [];
+    var passages = K.data.kotenPassages || [];
     var passage = opts.passage ||
       passages[Math.floor(Math.random() * passages.length)];
     var state = { index: 0 };
@@ -302,7 +302,7 @@
 
   // ---- 基盤へ登録 --------------------------------------------------------
   K.registerQuiz({
-    id: "dictation",
+    id: "koten",
     title: TITLE,
     icon: ICON,
     start: start,

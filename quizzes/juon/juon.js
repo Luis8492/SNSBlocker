@@ -5,8 +5,8 @@
 //   - 音源: 音声ファイル不要。Web Audio API で基音＋倍音を合成して鳴らす
 //   - 入力: 鍵盤クリック＝試し弾き（音が鳴るだけ）/ 鍵盤下の○＝解答の選択
 //
-// 将来、リズム聴音・旋律聴音は同じ quizzes/solfege/ に別クイズ
-// （solfege-rhythm 等）として追加する想定。
+// 将来、リズム聴音・旋律聴音は別フォルダ（quizzes/rhythm/ 等）の
+// 別クイズとして追加する想定。
 //
 // 基盤層（Kansho）へ registerQuiz で登録する。プラグインとして自己完結し、
 // 他のクイズには依存しない。
@@ -20,7 +20,7 @@
   var el = ui.el;
 
   var ICON = "🎹";
-  var TITLE = "重音聴音";
+  var TITLE = "重音(2音)";
   var QUESTIONS_PER_ROUND = 3;
 
   // 鍵盤の音域（MIDIノート番号）: C4(60)〜C6(84)
@@ -110,7 +110,7 @@
   //   marks    : { midi: "ok"|"ng" } — 答え合わせ結果の色付け（省略可）
   // 鍵盤クリックは常に試し弾き（音が鳴るだけで選択は変わらない）。
   function buildKeyboard(opts) {
-    var kbd = el("div", "sf-kbd");
+    var kbd = el("div", "ju-kbd");
     var whiteCount = 0;
     for (var m = KEY_LOW; m <= KEY_HIGH; m++) {
       if (!BLACK_PC[m % 12]) whiteCount++;
@@ -120,7 +120,7 @@
     var w = 0;
     for (var m = KEY_LOW; m <= KEY_HIGH; m++) {
       var isBlack = !!BLACK_PC[m % 12];
-      var key = el("div", "sf-key " + (isBlack ? "sf-black" : "sf-white"));
+      var key = el("div", "ju-key " + (isBlack ? "ju-black" : "ju-white"));
       key.title = noteName(m);
       key.setAttribute("data-midi", m);
       if (isBlack) {
@@ -133,11 +133,11 @@
         w++;
       }
       if (m % 12 === 0) { // C にだけ音名ラベルを出す（位置の目印）
-        key.appendChild(el("span", "sf-keylabel", noteName(m)));
+        key.appendChild(el("span", "ju-keylabel", noteName(m)));
       }
 
-      if (opts.marks && opts.marks[m]) key.classList.add("sf-" + opts.marks[m]);
-      if (opts.selected && opts.selected.indexOf(m) !== -1) key.classList.add("sf-sel");
+      if (opts.marks && opts.marks[m]) key.classList.add("ju-" + opts.marks[m]);
+      if (opts.selected && opts.selected.indexOf(m) !== -1) key.classList.add("ju-sel");
 
       // 試し弾き（クリックで音が鳴るだけ。選択は○で行う）
       (function (midi) {
@@ -146,7 +146,7 @@
 
       // 解答の選択○
       if (opts.onToggle) {
-        var dot = el("span", "sf-dot");
+        var dot = el("span", "ju-dot");
         (function (midi) {
           dot.addEventListener("click", function (ev) {
             ev.stopPropagation(); // 試し弾きさせない
@@ -214,7 +214,7 @@
       body.innerHTML = "";
       if (prevCorrect === true) {
         // しばらく見せてからフェードアウト（消えても行の高さは保ち、レイアウトを揺らさない）
-        body.appendChild(el("div", "ytg-result ytg-ok sf-fadeout", "正解"));
+        body.appendChild(el("div", "ytg-result ytg-ok ju-fadeout", "正解"));
       }
       body.appendChild(el("div", "ytg-hint",
         "同時に鳴る2つの音を聴き取り、鍵盤下の○で2音を選んでください" +
@@ -231,7 +231,7 @@
       playRow.appendChild(playLow);
       body.appendChild(playRow);
 
-      var status = el("div", "sf-status", "");
+      var status = el("div", "ju-status", "");
 
       // 選択の増減はクラスの付け替えで反映する（鍵盤は作り直さない）
       function toggle(midi) {
@@ -240,10 +240,10 @@
         else if (selected.length < 2) selected.push(midi);
         else { status.textContent = "選べるのは2音までです（○をもう一度押すと外せます）"; return; }
         status.textContent = "";
-        var keys = kbd.querySelectorAll(".sf-key");
+        var keys = kbd.querySelectorAll(".ju-key");
         for (var k = 0; k < keys.length; k++) {
           var midiK = parseInt(keys[k].getAttribute("data-midi"), 10);
-          keys[k].classList.toggle("sf-sel", selected.indexOf(midiK) !== -1);
+          keys[k].classList.toggle("ju-sel", selected.indexOf(midiK) !== -1);
         }
       }
 
@@ -263,7 +263,7 @@
     // 答え合わせ（2音とも一致で正解）
     function check(selected) {
       if (selected.length !== 2) {
-        var s = body.querySelector(".sf-status");
+        var s = body.querySelector(".ju-status");
         if (s) s.textContent = "2音選んでから送信してください";
         return;
       }
@@ -292,9 +292,9 @@
       body.appendChild(buildKeyboard({ marks: marks }));
 
       var legend = el("div", "ytg-legend");
-      legend.appendChild(el("span", "sf-legend-ok", "■"));
+      legend.appendChild(el("span", "ju-legend-ok", "■"));
       legend.appendChild(document.createTextNode(" 合っていた音　"));
-      legend.appendChild(el("span", "sf-legend-ng", "■"));
+      legend.appendChild(el("span", "ju-legend-ng", "■"));
       legend.appendChild(document.createTextNode(" 違う音（正しい音は自分で聴き取る）"));
       body.appendChild(legend);
 
@@ -335,7 +335,7 @@
 
   // ---- 基盤へ登録 ----------------------------------------------------------
   K.registerQuiz({
-    id: "solfege-chord",
+    id: "juon",
     title: TITLE,
     icon: ICON,
     start: start,

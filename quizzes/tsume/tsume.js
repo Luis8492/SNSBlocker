@@ -20,7 +20,7 @@
   var S = K.tsumeShogi;
 
   var ICON = "♟";
-  var TITLE = "詰将棋関所";
+  var TITLE = "詰将棋(3手詰)";
   var PROBLEMS_PER_ROUND = 3;
   var PLIES = 3; // 3手詰め
 

@@ -1,8 +1,8 @@
 /* 百人一首クイズ固有のスタイル。hyakunin.js が生成する要素を対象にする。
    基盤CSS(core/overlay.css)の後に読み込む前提。
-   プラグインとして自己完結させるため、dictation.css と共通のルール
+   プラグインとして自己完結させるため、koten.css と共通のルール
    （.ytg-text / .ytg-input / diff 等）も同値でここに持つ
-   （フォーク運用で quizzes/dictation を消しても崩れない）。 */
+   （フォーク運用で quizzes/koten を消しても崩れない）。 */
 
 .ytg-text {
   font-size: 26px;

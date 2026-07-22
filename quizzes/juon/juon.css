@@ -1,10 +1,10 @@
-/* 重音聴音クイズ固有のスタイル。chord.js が生成する要素を対象にする。
+/* 重音聴音クイズ固有のスタイル。juon.js が生成する要素を対象にする。
    基盤CSS(core/overlay.css)の後に読み込む前提。
    プラグインとして自己完結させるため、他クイズと共通の結果表示ルールも
    同値でここに持つ。 */
 
 /* --- ピアノ鍵盤 --------------------------------------------------------- */
-.sf-kbd {
+.ju-kbd {
   position: relative;
   height: 170px;
   margin: 10px 0 14px;
@@ -12,7 +12,7 @@
   user-select: none;
 }
 
-.sf-key {
+.ju-key {
   position: absolute;
   top: 0;
   box-sizing: border-box;
@@ -20,16 +20,16 @@
   cursor: pointer;
 }
 
-.sf-white {
+.ju-white {
   height: 100%;
   background: #f2efe6;
   border: 1px solid #3a4150;
   z-index: 1;
 }
-.sf-white:hover { background: #fff9e8; }
-.sf-white:active { background: #ead9a8; }
+.ju-white:hover { background: #fff9e8; }
+.ju-white:active { background: #ead9a8; }
 
-.sf-black {
+.ju-black {
   height: 60%;
   background: #23262d;
   border: 1px solid #000;
@@ -37,11 +37,11 @@
   z-index: 2;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
-.sf-black:hover { background: #333845; }
-.sf-black:active { background: #4a4130; }
+.ju-black:hover { background: #333845; }
+.ju-black:active { background: #4a4130; }
 
 /* C の音名ラベル（位置の目印） */
-.sf-keylabel {
+.ju-keylabel {
   position: absolute;
   bottom: 28px;
   left: 0;
@@ -53,7 +53,7 @@
 }
 
 /* --- 解答の選択○（鍵盤クリック＝試し弾きとは別に、これで選ぶ） --------- */
-.sf-dot {
+.ju-dot {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -65,27 +65,27 @@
   border: 2px solid #8a92a0;
   background: transparent;
 }
-.sf-black .sf-dot { border-color: #b8bdc7; }
-.sf-dot:hover { border-color: #d9b25a; }
+.ju-black .ju-dot { border-color: #b8bdc7; }
+.ju-dot:hover { border-color: #d9b25a; }
 
 /* 選択中: ○が金色に埋まり、鍵盤も淡く光る */
-.sf-sel .sf-dot {
+.ju-sel .ju-dot {
   background: #d9b25a;
   border-color: #d9b25a;
 }
-.sf-white.sf-sel { background: #f7e9c4; }
-.sf-black.sf-sel { background: #57492a; }
+.ju-white.ju-sel { background: #f7e9c4; }
+.ju-black.ju-sel { background: #57492a; }
 
 /* --- 答え合わせの色付け（自分の選んだ音の正誤のみ。正解の音は明かさない） */
-.sf-white.sf-ok { background: #bfe3c6; border-color: #4d8a59; }
-.sf-black.sf-ok { background: #2f5a38; }
-.sf-white.sf-ng { background: #ecc4c4; border-color: #a05252; }
-.sf-black.sf-ng { background: #6a3232; }
-.sf-legend-ok { color: #7ad18a; }
-.sf-legend-ng { color: #e88a8a; }
+.ju-white.ju-ok { background: #bfe3c6; border-color: #4d8a59; }
+.ju-black.ju-ok { background: #2f5a38; }
+.ju-white.ju-ng { background: #ecc4c4; border-color: #a05252; }
+.ju-black.ju-ng { background: #6a3232; }
+.ju-legend-ok { color: #7ad18a; }
+.ju-legend-ng { color: #e88a8a; }
 
 /* --- 状態表示（「2音選んでください」等） -------------------------------- */
-.sf-status {
+.ju-status {
   min-height: 1.4em;
   font-size: 13px;
   color: #e88a8a;
@@ -95,10 +95,10 @@
 
 /* 「正解」表示: 1.2秒見せてから0.6秒でフェードアウト。
    opacity だけを変え、行の高さは残してレイアウトを揺らさない。 */
-.sf-fadeout {
-  animation: sf-fade 1.8s ease forwards;
+.ju-fadeout {
+  animation: ju-fade 1.8s ease forwards;
 }
-@keyframes sf-fade {
+@keyframes ju-fade {
   0%   { opacity: 1; }
   67%  { opacity: 1; }
   100% { opacity: 0; }
