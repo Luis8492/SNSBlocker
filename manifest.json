@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "YouTube 書き取り関所",
   "version": "1.0.0",
-  "description": "YouTubeの動画を開くと、古典文学の書き取りを課します。3問正解するまで動画は見られません。見すぎ防止用。",
+  "description": "YouTubeの動画を開くと、古典文学の書き取りを課します。作品の全問を正解するまで動画は見られません。見すぎ防止用。",
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/*", "*://m.youtube.com/*"],

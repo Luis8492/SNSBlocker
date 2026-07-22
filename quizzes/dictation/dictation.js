@@ -98,7 +98,7 @@
     return out;
   }
 
-  // ---- 1ラウンド（3問）の構築 --------------------------------------------
+  // ---- 1ラウンド（passage.segments の数だけ出題）の構築 ------------------
   function start(container, ctx) {
     ctx = ctx || {};
     var opts = ctx.options || {};

@@ -38,6 +38,7 @@ html.ytg-lock-scroll body {
 .ytg-subtitle { font-size: 14px; color: #9aa0ab; margin-top: 6px; }
 .ytg-progress {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
   margin-top: 16px;
