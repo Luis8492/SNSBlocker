@@ -6,7 +6,7 @@
 
 ## 0. 準備
 
-- [ ] `chrome://extensions` でデベロッパーモード → 最新の master を再読み込み
+- [ ] `chrome://extensions` でデベロッパーモード → `extension/` フォルダを読み込み（最新の master）
 - [ ] 拡張のエラー表示（「エラー」ボタン）が出ていない
 
 ## A. クイズ機能（continue.html、7種 × ライト/ダーク）
@@ -68,12 +68,11 @@
 
 ## D. 申請前パッケージ確認
 
-- [ ] ZIP に含めるのは: `manifest.json` / `background.js` / `config.js` /
-      `options.html` / `options.js` / `continue.html` / `continue.js` /
-      `core/` / `quizzes/` / `icons/` のみ
-      （`tmp/`・`scripts/`・`docs/`・`.git`・`README.md` は含めない）
-- [ ] ZIP 作成例（リポジトリ直下で）:
-      `git archive -o snsquizlocker-1.0.0.zip HEAD manifest.json background.js config.js options.html options.js continue.html continue.js core quizzes icons`
+- [ ] ZIP に含めるのは `extension/` 以下の全ファイル（ZIP のルート直下に
+      manifest.json が来る形）。`android/`・`ios/`・`tmp/`・`scripts/`・`docs/`・
+      `.git`・ルートの `README.md` は含めない
+- [ ] ZIP 作成（リポジトリ直下で）:
+      `git archive -o snsquizlocker-1.0.0.zip HEAD:extension`
 - [ ] ZIP を展開して `chrome://extensions` に読み込み、エラーなく起動する
 - [ ] `manifest.json` の version がストアに上げる版と一致
 - [ ] プライバシーポリシーの公開URLが有効（リポジトリ公開後に確認）

@@ -3,13 +3,13 @@
 // やねうら王の高速詰め判定は開き王手を見逃すことがあるため、この検証で除外する。
 //
 // 使い方: node gen_problems.js <出力先.js> <N>:<候補.json> [<N>:<候補.json> ...]
-//   例:   node gen_problems.js quizzes/tsume/problems.js 3:c3.json 5:c5.json 7:c7.json
+//   例:   node gen_problems.js extension/quizzes/tsume/problems.js 3:c3.json 5:c5.json 7:c7.json
 "use strict";
 const fs = require("fs");
 const path = require("path");
 
 global.window = {};
-require(path.join(__dirname, "..", "quizzes", "tsume", "shogi.js"));
+require(path.join(__dirname, "..", "extension", "quizzes", "tsume", "shogi.js"));
 const S = window.Kansho.tsumeShogi;
 
 const TARGET = 300;

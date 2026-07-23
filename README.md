@@ -14,12 +14,28 @@ SNS を見すぎないための Chrome 拡張機能です。
    - **もっと続ける!!!** — SNS を離れ、拡張機能内の継続ページ（`continue.html`）へ遷移し、そこで課題を好きなだけ続けられる。
    - **ソーシャルネットワークへ進む** — ロックを解除して閲覧する。
 
+## リポジトリ構成
+
+マルチプラットフォーム展開のため、プラットフォームごとにフォルダを分けている。
+
+```
+extension/   Chrome 拡張機能（本体。ビルド不要でそのまま読み込める）
+android/     Android ネイティブ版（開発中。クイズ資産は extension/ から取り込む）
+ios/         iOS 版（構想段階）
+docs/        共通ドキュメント（プライバシーポリシー・ストア掲載文・QAチェックリスト）
+scripts/     データ・アイコン生成スクリプト
+tmp/         生データ置き場（git 管理外）
+```
+
+クイズ本体（`extension/core/` と `extension/quizzes/`）はプレーンな JS/HTML/CSS で
+ブラウザ非依存のため、モバイル版は WebView からこの資産を共有して使う。
+
 ## インストール（開発者モードで読み込み）
 
 1. Chrome で `chrome://extensions` を開く。
 2. 右上の「**デベロッパーモード**」を ON。
 3. 「**パッケージ化されていない拡張機能を読み込む**」をクリック。
-4. このフォルダ（`D:\SNSBlocker`）を選択。
+4. `extension/` フォルダ（`D:\SNSBlocker\extension`）を選択。
 5. YouTube の動画を開いて動作確認。
 
 ## 収録プラグイン
@@ -28,11 +44,11 @@ SNS を見すぎないための Chrome 拡張機能です。
 
 | プラグイン | id | 詳細 |
 |---|---|---|
-| 古典文学の書き取り | `koten` | [quizzes/koten/README.md](quizzes/koten/README.md) |
-| 百人一首 | `hyakunin` | [quizzes/hyakunin/README.md](quizzes/hyakunin/README.md) |
-| 重音(2音)の聴音 | `juon` | [quizzes/juon/README.md](quizzes/juon/README.md) |
-| 旋律聴音（4小節の書き取り） | `senritsu` | [quizzes/senritsu/README.md](quizzes/senritsu/README.md) |
-| 詰将棋(3手詰) | `tsume` | [quizzes/tsume/README.md](quizzes/tsume/README.md) |
+| 古典文学の書き取り | `koten` | [extension/quizzes/koten/README.md](extension/quizzes/koten/README.md) |
+| 百人一首 | `hyakunin` | [extension/quizzes/hyakunin/README.md](extension/quizzes/hyakunin/README.md) |
+| 重音(2音)の聴音 | `juon` | [extension/quizzes/juon/README.md](extension/quizzes/juon/README.md) |
+| 旋律聴音（4小節の書き取り） | `senritsu` | [extension/quizzes/senritsu/README.md](extension/quizzes/senritsu/README.md) |
+| 詰将棋(3手詰) | `tsume` | [extension/quizzes/tsume/README.md](extension/quizzes/tsume/README.md) |
 | 詰将棋(5手詰) | `tsume5` | 同上（1フォルダから手数別に3プラグインを登録） |
 | 詰将棋(7手詰) | `tsume7` | 同上 |
 
@@ -54,6 +70,7 @@ SNS を見すぎないための Chrome 拡張機能です。
 
 **基盤部分**と**クイズ部分**を分離している。基盤は「どの形式か」を一切知らず、
 選択パネル（または `config.js`）で選ばれたクイズに出題を委譲する。
+（以下のパスはすべて `extension/` 内）
 
 ```
 core/registry.js   基盤: クイズを登録・選択するレジストリ（window.Kansho）

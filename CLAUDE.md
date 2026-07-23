@@ -4,14 +4,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-"SNSQuizLocker" — a Chrome extension (Manifest V3) that overlays SNS pages (YouTube per-video; X/Facebook/Instagram/TikTok/Reddit site-wide) with a quiz gate (dictation, ear training, tsume-shogi). The video stays locked (and force-paused) until all segments of a randomly chosen passage are typed correctly. There is no build step, no package.json, no tests — plain ES5-style vanilla JS loaded directly as content scripts.
+"SNSQuizLocker" — a quiz gate that overlays SNS pages (YouTube per-video; X/Facebook/Instagram/TikTok/Reddit site-wide) with a quiz (dictation, ear training, tsume-shogi). The page stays locked (videos force-paused) until all questions of a randomly chosen round are answered correctly.
 
 Comments, commit messages, and UI text are all in Japanese; follow that convention.
 
-## Development
+## Repository layout (multi-platform)
 
-- No build/lint/test commands. To run: load the repo folder unpacked via `chrome://extensions` (developer mode), then open a YouTube video. After edits, reload the extension there and refresh the tab.
+- `extension/` — the Chrome extension (Manifest V3), the shipping product. No build step, no package.json, no tests — plain ES5-style vanilla JS loaded directly as content scripts. **All paths in the Architecture section below are relative to `extension/`.**
+- `android/` — Android native version (in development): a thin native shell (foreground-app detection + blocking activity) hosting the quiz assets from `extension/core/` + `extension/quizzes/` in a WebView, copied in at build time by a Gradle task. Never fork/duplicate quiz code into `android/` — `extension/` stays the single source of truth for quizzes.
+- `ios/` — iOS version (planned; Screen Time API shield → quiz in-app).
+- `docs/` — privacy policy, store listing draft, QA checklist. `scripts/` — data/icon generation. `tmp/` — raw data, gitignored.
+
+## Development (extension)
+
+- No build/lint/test commands. To run: load the `extension/` folder unpacked via `chrome://extensions` (developer mode), then open a YouTube video. After edits, reload the extension there and refresh the tab.
 - `continue.html` is the standalone "keep practicing" page (reached after clearing a quiz); it can be opened directly as `chrome-extension://<id>/continue.html` for quick manual testing without YouTube.
+- Store package = the `extension/` subtree: `git archive -o snsquizlocker-<ver>.zip HEAD:extension`.
 
 ## Architecture: platform (`core/`) vs. quiz plugins (`quizzes/`)
 

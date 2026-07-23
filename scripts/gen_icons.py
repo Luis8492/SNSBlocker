@@ -3,12 +3,12 @@
 # デザイン: UIの判子バッジと同じ意匠 — ノート白地の角丸四角＋青磁の枠＋「Q」
 # （将来的な英語圏展開を考え、拡張機能アイコンはラテン文字にしている）。
 # 512px で描いて LANCZOS で縮小し、小サイズでも輪郭を保つ。
-# 使い方: python scripts/gen_icons.py  （リポジトリルートで実行。icons/ に出力）
+# 使い方: python scripts/gen_icons.py  （リポジトリルートで実行。extension/icons/ に出力）
 import os
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "icons")
+OUT = os.path.join(ROOT, "extension", "icons")
 os.makedirs(OUT, exist_ok=True)
 
 BG = (253, 253, 251, 255)      # --k-card（ノート白）
