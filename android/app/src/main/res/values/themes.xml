@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ライト/ダークは values-night/ との対で切り替える。
+     WebView の prefers-color-scheme もアプリのテーマ（uiMode）に追従するため、
+     クイズ画面の配色（overlay.css のトークン）はここに連動する。 -->
+<resources>
+    <style name="Theme.SNSQuizLocker" parent="android:Theme.Material.Light">
+        <item name="android:windowBackground">#eef0ee</item>
+    </style>
+    <style name="Theme.SNSQuizLocker.Quiz" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">#eef0ee</item>
+    </style>
+</resources>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>クイズ関所 — SNSQuizLocker</title>
+  <!-- core/ と quizzes/ はビルド時に extension/ からコピーされる（syncWebAssets タスク）。
+       読み込み順は extension/continue.html と同じ:
+       registry → ui → 設定(native-config) → クイズ → ゲート(native-host) -->
+  <link rel="stylesheet" href="core/overlay.css">
+  <link rel="stylesheet" href="quizzes/koten/koten.css">
+  <link rel="stylesheet" href="quizzes/hyakunin/hyakunin.css">
+  <link rel="stylesheet" href="quizzes/juon/juon.css">
+  <link rel="stylesheet" href="quizzes/senritsu/senritsu.css">
+  <link rel="stylesheet" href="quizzes/tsume/tsume.css">
+  <style>
+    /* 地色は overlay.css のトークンと同値（オーバーレイが全面を覆うため実質見えない保険） */
+    html, body { margin: 0; height: 100%; background: #eef0ee; }
+    @media (prefers-color-scheme: dark) {
+      html, body { background: #16171a; }
+    }
+  </style>
+</head>
+<body>
+  <div id="ytg-root"></div>
+  <script src="core/registry.js"></script>
+  <script src="core/ui.js"></script>
+  <script src="native-config.js"></script>
+  <script src="quizzes/koten/passages.js"></script>
+  <script src="quizzes/koten/koten.js"></script>
+  <script src="quizzes/hyakunin/poems.js"></script>
+  <script src="quizzes/hyakunin/hyakunin.js"></script>
+  <script src="quizzes/juon/juon.js"></script>
+  <script src="quizzes/senritsu/senritsu.js"></script>
+  <script src="quizzes/tsume/shogi.js"></script>
+  <script src="quizzes/tsume/problems.js"></script>
+  <script src="quizzes/tsume/tsume.js"></script>
+  <script src="native-host.js"></script>
+</body>
+</html>
