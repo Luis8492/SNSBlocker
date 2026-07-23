@@ -36,6 +36,7 @@
             android:launchMode="singleTask"
             android:taskAffinity="io.github.luis8492.snsquizlocker.quiz"
             android:excludeFromRecents="true"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
             android:theme="@style/Theme.SNSQuizLocker.Quiz" />
 
         <!-- 前面アプリの監視（フォアグラウンドサービス） -->
