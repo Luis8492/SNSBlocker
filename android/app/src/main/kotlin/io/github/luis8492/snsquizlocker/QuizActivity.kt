@@ -3,6 +3,7 @@ package io.github.luis8492.snsquizlocker
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.os.Bundle
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -26,6 +27,10 @@ class QuizActivity : Activity() {
         val targetPackage = intent.getStringExtra(EXTRA_PACKAGE)
         val isTest = intent.getBooleanExtra(EXTRA_TEST, false)
 
+        // デバッグビルドでは chrome://inspect からWebViewを検査できるようにする
+        if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
         web = WebView(this)
         web.settings.javaScriptEnabled = true
         web.settings.domStorageEnabled = true

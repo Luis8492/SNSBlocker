@@ -27,11 +27,14 @@
             </intent-filter>
         </activity>
 
-        <!-- クイズ関所。監視サービスから起動される全画面 WebView -->
+        <!-- クイズ関所。監視サービスから起動される全画面 WebView。
+             taskAffinity を分けて独立タスクにする: finish で直前のアプリ（=ゲート発動元の
+             SNSアプリ）に戻すため。設定画面のタスクに積むと解除後に設定画面へ戻ってしまう。 -->
         <activity
             android:name=".QuizActivity"
             android:exported="false"
             android:launchMode="singleTask"
+            android:taskAffinity="io.github.luis8492.snsquizlocker.quiz"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.SNSQuizLocker.Quiz" />
 
